@@ -13,4 +13,3 @@ target/
 # IDE ignored files
 .idea/
 *.iml
-*.env
