@@ -1,5 +1,5 @@
 From aryan750/jdk-maven:v1 as builder
-COPY sa-webapp/* .
+COPY * .
 RUN mvn install
 
 FROM openjdk:8-jdk-alpine
