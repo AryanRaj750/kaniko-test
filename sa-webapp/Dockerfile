@@ -1,5 +1,6 @@
 From aryan750/jdk-maven:v1 as builder
-COPY * .
+COPY * /source/
+WORKDIR /source/
 RUN mvn install
 
 FROM openjdk:8-jdk-alpine
