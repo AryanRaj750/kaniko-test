@@ -6,6 +6,6 @@ RUN pip3 install -r requirements.txt && \
 RUN pyinstaller --onefile /app/sentiment_analysis.py
 
 FROM alpine:3.14
-COPY --from=builder /sentiment_analysis /
+COPY --from=builder /app/sentiment_analysis /
 EXPOSE 5000
 CMD ["sentiment_analysis"]
