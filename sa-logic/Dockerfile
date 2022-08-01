@@ -1,8 +1,10 @@
-FROM python:3.6-slim
+FROM python:3.6-slim as builder
 COPY sa /app
 WORKDIR /app
 RUN pip3 install -r requirements.txt && \
     python3 -m textblob.download_corpora
+
+FROM alpine:3.14
+COPY --from=builder  sentiment_analysis .
 EXPOSE 5000
-ENTRYPOINT ["python3"]
-CMD ["sentiment_analysis.py"]
+CMD ["sentiment_analysis"]
