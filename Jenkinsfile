@@ -15,7 +15,7 @@ pipeline {
                 echo 'Building Front-End React App'
                 sh   'cd sa-frontend'
                 sh   ' ls -l'
-                sh   'docker build -t sa-frontend .'
+                sh   'docker build -f ./sa-frontend/Dockerfile -t sa-frontend ./sa-frontend'
                 sh   'docker tag sa-frontend:latest 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-frontend:v1'
                 sh   'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com'
                 sh   'docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-frontend:v1'
@@ -31,7 +31,7 @@ pipeline {
             steps {
                 echo 'Building Java-WebApp'
                 sh   ' cd sa-webapp'
-                sh   'sudo docker build -t sa-webapp .'
+                sh   'sudo docker build -f ./sa-webapp/Dockerfile -t sa-webapp:latest ./sa-webapp'
                 sh   'sudo docker tag sa-webapp:latest 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp:v1'
                 sh   'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com'
                 sh   'docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp:v1'
@@ -47,7 +47,7 @@ pipeline {
             steps {
                 echo 'Building Python-App'
                 cd   'cd sa-logic'
-                sh   'docker build -t sa-logic .'
+                sh   'docker build -f ./sa-logic/Dockerfile -t sa-logic:latest ./sa-logic'
                 sh   'docker tag sa-logic:latest 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-logic:v1'
                 sh   'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com'
                 sh   'docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-logic:v1'
