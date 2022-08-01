@@ -8,7 +8,7 @@ pipeline {
                 echo "Building Front-End React App"
                 sh   sudo docker build -f ./sa-frontend/Dockerfile -t sa-frontend-react ./sa-frontend
                 sh   sudo docker tag sa-frontend-react 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-frontend
-                sh   sudo docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-frontend
+                sh   sudo docker push '166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-frontend'
                 echo "Build Front-End has finished!"
             }
         }
