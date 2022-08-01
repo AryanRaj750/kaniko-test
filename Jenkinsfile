@@ -20,7 +20,7 @@ pipeline {
                 echo "Building Java-WebApp"
                 sh   sudo docker build -f ./sa-webapp/Dockerfile -t sa-webapp ./sa-webapp
                 sh   sudo docker tag sa-webapp 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp
-                sh   sudo docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp
+                sh   sudo docker push '166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp'
                 echo "Build Java-WebApp has finished!"
             }
         }
@@ -32,7 +32,7 @@ pipeline {
                 echo "Building Python-App"
                 sh   sudo docker build -f ./sa-logic/Dockerfile -t Python-App ./sa-logic
                 sh   sudo docker tag Python-App 166287152401.dkr.ecr.us-west-2.amazonaws.com/Python-App
-                sh   sudo docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/Python-App
+                sh   sudo docker push '166287152401.dkr.ecr.us-west-2.amazonaws.com/Python-App'
                 echo "Build Python-App has finished!"
             }
         }
