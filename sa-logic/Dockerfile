@@ -3,7 +3,7 @@ COPY sa /app
 WORKDIR /app
 RUN pip3 install -r requirements.txt && \
     python3 -m textblob.download_corpora
-RUN pyinstaller --onefile sentiment_analysis.py
+RUN pyinstaller --onefile /app/sentiment_analysis.py
 
 FROM alpine:3.14
 COPY --from=builder /sentiment_analysis /
