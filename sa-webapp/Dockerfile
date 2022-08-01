@@ -1,7 +1,7 @@
 From    aryan750/jdk-maven:v1 as builder
 COPY    ./*  /source/
 WORKDIR /source/
-RUN     mvn install
+RUN     /maven3/bin/mvn install
 
 FROM    openjdk:8-jdk-alpine
 # Environment Variable that defines the endpoint of sentiment-analysis python api.
