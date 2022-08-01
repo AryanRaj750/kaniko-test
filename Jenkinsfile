@@ -3,7 +3,13 @@ pipeline {
     stages {
         stage('React-Frontend-Build') {
             agent {
-                label slave1
+                node {
+                    label 'slave1'
+                }
+            }
+            options {
+                timeout(time: 1, unit: 'HOURS') 
+                retry(1) 
             }
             steps {
                 echo 'Building Front-End React App'
@@ -15,7 +21,9 @@ pipeline {
         }
         stage('Java-WebApp-Build') {
             agent {
-                label slave1
+                node {
+                    label 'slave1'
+                }
             }
             steps {
                 echo 'Building Java-WebApp'
@@ -27,7 +35,9 @@ pipeline {
         }
         stage('Python-Build') {
             agent {
-                label slave1
+                node {
+                    label 'slave1'
+                }
             }
             steps {
                 echo 'Building Python-App'
