@@ -20,6 +20,8 @@ spec:
       labels:
         app: sa-frontend                                  # 6
     spec:
+      imagePullSecrets:
+      - name: secret-registry
       containers:
         - image: rinormaloku/sentiment-analysis-frontend
           imagePullPolicy: Always                         # 7
