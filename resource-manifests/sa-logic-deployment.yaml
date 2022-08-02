@@ -20,6 +20,8 @@ spec:
       labels:
         app: sa-logic
     spec:
+      imagePullSecrets:
+      - name: secret-registry
       containers:
         - image: rinormaloku/sentiment-analysis-logic
           imagePullPolicy: Always
