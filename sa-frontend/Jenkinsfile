@@ -1,12 +1,12 @@
 pipeline {
     agent none
     stages {
-        // stage('git source checkout'){
-        //     steps{
-        //         git credentialsId: 'fe281c5c-6183-4157-b012-23e840ba54a3', url: 'https://github.com/AryanRaj750/setntimental-analysis.git'
-        //     }
+        stage('git source checkout'){
+            steps{
+                git(credentialsId: 'fe281c5c-6183-4157-b012-23e840ba54a3', url: 'https://github.com/AryanRaj750/setntimental-analysis.git')
+            }
             
-        // }
+        }
         stage('React-Frontend-Image-Build') {
             agent {
                 node {
