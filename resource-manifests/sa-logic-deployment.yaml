@@ -23,7 +23,7 @@ spec:
       imagePullSecrets:
       - name: secret-registry
       containers:
-        - image: rinormaloku/sentiment-analysis-logic
+        - image: 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-logic:v1
           imagePullPolicy: Always
           name: sa-logic
           ports:
