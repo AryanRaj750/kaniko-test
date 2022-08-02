@@ -60,7 +60,7 @@ pipeline {
             }
             steps {
                 script {
-                    kubernetesDeploy(configs: 'sa-frontend-deployment.yaml', kubeconfigId: 'k8s-credential')
+                    kubernetesDeploy(configs: 'resource-manifests/sa-frontend-deployment.yaml', kubeconfigId: 'k8s-credential')
                 }
                 
             }
