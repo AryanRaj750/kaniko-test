@@ -26,6 +26,10 @@ pipeline {
                     label 'slave1'
                 }
             }
+            options {
+                timeout(time: 1, unit: 'HOURS') 
+                retry(1) 
+            }
             steps {
                 echo 'Building Java-WebApp'
                 sh   'sudo docker build -f ./sa-webapp/Dockerfile -t sa-webapp:latest ./sa-webapp'
@@ -40,6 +44,10 @@ pipeline {
                 node {
                     label 'slave1'
                 }
+            }
+            options {
+                timeout(time: 1, unit: 'HOURS') 
+                retry(1) 
             }
             steps {
                 echo 'Building Python-App'
