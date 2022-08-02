@@ -38,11 +38,6 @@ pipeline {
             }
         }  
         stage('Deploy-Sa-frontend') {
-            agent {
-                node {
-                    label 'slave1'
-                }
-            }
             options {
                 timeout(time: 1, unit: 'HOURS') 
                 retry(1) 
