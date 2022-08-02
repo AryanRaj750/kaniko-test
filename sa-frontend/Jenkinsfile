@@ -9,7 +9,7 @@ pipeline {
             }
             options {
                 timeout(time: 1, unit: 'HOURS') 
-                retry(2) 
+                retry(1) 
             }
             steps {
                 echo 'Building Front-End React App'
@@ -26,7 +26,7 @@ pipeline {
             }
             options {
                 timeout(time: 1, unit: 'HOURS') 
-                retry(2) 
+                retry(1) 
             }
             steps {
                 script {
@@ -45,7 +45,7 @@ pipeline {
             }
             options {
                 timeout(time: 1, unit: 'HOURS') 
-                retry(2) 
+                retry(1) 
             }
             steps {
                 script {
