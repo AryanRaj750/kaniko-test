@@ -49,6 +49,7 @@ pipeline {
             }
             steps {
                 script {
+                    kubernetesDeploy( configs: '${WORKSPACE}/resource-manifests/sa-frontend-deployment.yaml', kubeconfigId: 'k8s-credential' )
                     sh 'envsubs < ${WORKSPACE}/resource-manifests/sa-frontend-deployment.yaml | kubectl apply -f '
                 }
                 
