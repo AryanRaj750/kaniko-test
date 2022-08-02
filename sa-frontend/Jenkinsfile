@@ -1,0 +1,60 @@
+pipeline {
+    agent none
+    stages {
+        stage('React-Frontend-Image-Build') {
+            agent {
+                node {
+                    label 'slave1'
+                }
+            }
+            options {
+                timeout(time: 1, unit: 'HOURS') 
+                retry(2) 
+            }
+            steps {
+                echo 'Building Front-End React App'
+                sh   'docker build -f ./sa-frontend/Dockerfile -t sa-frontend ./sa-frontend'
+                sh   'docker tag sa-frontend:latest 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-frontend:v1'
+                
+            }
+        }   
+        stage('React-Frontend-Image-Push') {
+            agent {
+                node {
+                    label 'slave1'
+                }
+            }
+            options {
+                timeout(time: 1, unit: 'HOURS') 
+                retry(2) 
+            }
+            steps {
+                script {
+                    aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com
+                    docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-frontend:v1
+                    echo 'Image has pushed!'
+                }
+                
+            }
+        }  
+        stage('Deploy-Sa-frontend') {
+            agent {
+                node {
+                    label 'slave1'
+                }
+            }
+            options {
+                timeout(time: 1, unit: 'HOURS') 
+                retry(2) 
+            }
+            steps {
+                script {
+                    sh 'envsubs < ${WORKSPACE}/resource-manifests/sa-frontend-deployment.yaml | kubectl apply -f '
+                }
+                
+            }
+        }    
+        
+        
+    }
+}

@@ -1,0 +1,57 @@
+pipeline {
+    agent none
+    stages {
+        stage('Python-Image-Build') {
+            agent {
+                node {
+                    label 'slave1'
+                }
+            }
+            options {
+                timeout(time: 1, unit: 'HOURS') 
+                retry(1) 
+            }
+            steps {
+                echo 'Building Python-App'
+                sh   'docker build -f ./sa-logic/Dockerfile -t sa-logic:latest ./sa-logic'
+                sh   'docker tag sa-logic:latest 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-logic:v1'
+            }
+        }
+        stage('Python-Image-Push') {
+            agent {
+                node {
+                    label 'slave1'
+                }
+            }
+            options {
+                timeout(time: 1, unit: 'HOURS') 
+                retry(1) 
+            }
+            steps {
+                script {
+                    aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com
+                    docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-logic:v1
+                    echo 'Image has Pushed!'
+                }
+                
+            }
+        }
+        stage('Deploy-Sa-python-App') {
+            agent {
+                node {
+                    label 'slave1'
+                }
+            }
+            options {
+                timeout(time: 1, unit: 'HOURS') 
+                retry(1) 
+            }
+            steps {
+                script {
+                    
+                }
+                
+            }
+        }
+    }
+}
