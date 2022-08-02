@@ -23,7 +23,7 @@ spec:
       imagePullSecrets:
       - name: secret-registry
       containers:
-        - image: rinormaloku/sentiment-analysis-frontend
+        - image: 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-frontend:v1
           imagePullPolicy: Always                         # 7
           name: sa-frontend
           ports:
