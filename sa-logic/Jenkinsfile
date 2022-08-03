@@ -48,8 +48,8 @@ pipeline {
             }
             steps {
                 script {
-                    microk8s kubectl apply -f resource-manifests/sa-logic-deployment.yaml
-                    microk8s kubectl apply -f resource-manifests/service-sa-logic.yaml                
+                    sh 'microk8s kubectl apply -f resource-manifests/sa-logic-deployment.yaml'
+                    sh 'microk8s kubectl apply -f resource-manifests/service-sa-logic.yaml'
                 }                
             }
         }    
