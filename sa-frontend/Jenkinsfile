@@ -61,7 +61,7 @@ pipeline {
             steps {
                 script {
                     sh 'sudo netstat -tnlp'
-                    sh 'kubectl apply -f resource-manifests/sa-frontend-deployment.yaml'                    
+                    sh 'microk8s kubectl apply -f resource-manifests/sa-frontend-deployment.yaml'                    
                 }
                 
             }
