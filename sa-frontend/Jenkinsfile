@@ -1,5 +1,10 @@
 pipeline {
     agent none
+    environment {
+        JAVA_WEB_API = 'http://54.218.48.57:30127/sentiment'
+        IMAGE_NAME   = '166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-frontend'
+        IMAGE_TAG    = 'v1'
+    }
     stages {
         stage('React-Frontend-Image-Build') {
             agent {
@@ -13,8 +18,10 @@ pipeline {
             }
             steps {
                 echo 'Building Front-End React App'
+                sh   "sed  -i 's,http://localhost:8080/sentiment,$JAVA_WEB_API,g' sa-frontend/src/App.js"
+                sh   'cat sa-frontend/src/App.js'
                 sh   'docker build -f ./sa-frontend/Dockerfile -t sa-frontend ./sa-frontend'
-                sh   'docker tag sa-frontend:latest 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-frontend:v1'
+                sh   'docker tag sa-frontend:latest ${IMAGE_NAME}:${IMAGE_TAG}'
                 
             }
         }   
@@ -31,7 +38,7 @@ pipeline {
             steps {
                 script {
                     sh 'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com'
-                    sh 'docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-frontend:v1'
+                    sh 'docker push ${IMAGE_NAME}:${IMAGE_TAG}'
                     echo 'Image has pushed!'
                 }
                 
@@ -49,8 +56,8 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'microk8s kubectl apply -f resource-manifests/sa-frontend-deployment.yaml'
-                    sh 'microk8s kubectl apply -f resource-manifests/service-sa-frontend-lb.yaml'                    
+                    sh 'microk8s kubectl apply -f resource-manifests/sa-frontend-deployment.yaml -n test'
+                    sh 'microk8s kubectl apply -f resource-manifests/service-sa-frontend-lb.yaml -n test'                    
                 }                
             }
         }       

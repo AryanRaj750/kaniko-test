@@ -1,5 +1,9 @@
 pipeline {
     agent none
+    environment {
+        IMAGE_NAME   = '166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-logic'
+        IMAGE_TAG    = 'v1'
+    }
     stages {
         stage('Python-Image-Build') {
             agent {
@@ -14,7 +18,7 @@ pipeline {
             steps {
                 echo 'Building Python-App'
                 sh   'docker build -f ./sa-logic/Dockerfile -t sa-logic:latest ./sa-logic'
-                sh   'docker tag sa-logic:latest 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-logic:v1'
+                sh   'docker tag sa-logic:latest ${IMAGE_TAG}:${IMAGE_TAG}'
             }
         }
         stage('Python-Image-Push') {
@@ -30,7 +34,7 @@ pipeline {
             steps {
                 script {
                     sh 'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com'
-                    sh 'docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-logic:v1'
+                    sh 'docker push ${IMAGE_TAG}:${IMAGE_TAG}'
                     echo 'Image has Pushed!'
                 }
                 
@@ -48,8 +52,8 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'microk8s kubectl apply -f resource-manifests/sa-logic-deployment.yaml'
-                    sh 'microk8s kubectl apply -f resource-manifests/service-sa-logic.yaml'
+                    sh 'microk8s kubectl apply -f resource-manifests/sa-logic-deployment.yaml -n test'
+                    sh 'microk8s kubectl apply -f resource-manifests/service-sa-logic.yaml -n test'
                 }                
             }
         }    
