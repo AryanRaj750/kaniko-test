@@ -60,7 +60,7 @@ pipeline {
             }
             steps {
                 script {
-                    kubernetesDeploy(configs: 'resource-manifests/sa-frontend-deployment.yaml', kubeconfigId: 'K8S-CREDENTIAL')
+                    sh 'kubectl apply -f /home/ubuntu/workspace/sa-frontend-deployment.yaml'
                 }
                 
             }
