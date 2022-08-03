@@ -6,41 +6,41 @@ pipeline {
     }
     stages {
         
-        stage('Java-WebApp-Image-Build') {
-            agent {
-                node {
-                    label 'slave2'
-                }
-            }
-            options {
-                timeout(time: 1, unit: 'HOURS') 
-                retry(1) 
-            }
-            steps {
-                echo 'Building Java-WebApp'
-                sh   'sudo docker build -f ./sa-webapp/Dockerfile -t sa-webapp:latest ./sa-webapp'
-                sh   'sudo docker tag sa-webapp:latest ${IMAGE_NAME}:${IMAGE_TAG}'
-            }
-        }
-        stage('Java-WebApp-Image-Push') {
-            agent {
-                node {
-                    label 'slave2'
-                }
-            }
-            options {
-                timeout(time: 1, unit: 'HOURS') 
-                retry(1) 
-            }
-            steps {
-                script {
-                    sh   'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com'
-                    sh   'docker push ${IMAGE_NAME}:${IMAGE_TAG}'
-                    echo 'Image has Pushed!'
-                }
+        // stage('Java-WebApp-Image-Build') {
+        //     agent {
+        //         node {
+        //             label 'slave2'
+        //         }
+        //     }
+        //     options {
+        //         timeout(time: 1, unit: 'HOURS') 
+        //         retry(1) 
+        //     }
+        //     steps {
+        //         echo 'Building Java-WebApp'
+        //         sh   'sudo docker build -f ./sa-webapp/Dockerfile -t sa-webapp:latest ./sa-webapp'
+        //         sh   'sudo docker tag sa-webapp:latest ${IMAGE_NAME}:${IMAGE_TAG}'
+        //     }
+        // }
+        // stage('Java-WebApp-Image-Push') {
+        //     agent {
+        //         node {
+        //             label 'slave2'
+        //         }
+        //     }
+        //     options {
+        //         timeout(time: 1, unit: 'HOURS') 
+        //         retry(1) 
+        //     }
+        //     steps {
+        //         script {
+        //             sh   'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com'
+        //             sh   'docker push ${IMAGE_NAME}:${IMAGE_TAG}'
+        //             echo 'Image has Pushed!'
+        //         }
                 
-            }
-        }        
+        //     }
+        // }        
         stage('Test-Sa-WebApp') {
             agent {
                 node {
