@@ -61,6 +61,8 @@ pipeline {
             steps {
                 script {
                     sh 'kubectl apply -f /home/ubuntu/workspace/sa-frontend-deployment.yaml'
+                    sh 'whoami'
+                    sh 'hostname -i'
                 }
                 
             }
