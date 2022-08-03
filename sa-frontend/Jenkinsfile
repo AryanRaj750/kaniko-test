@@ -60,12 +60,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'pwd && ls -l'
-                    sh 'mkdir test'
-                    sh 'whoami'
-                    sh 'hostname -i'
-                    sh 'kubectl apply -f /home/ubuntu/workspace/sa-frontend-deployment.yaml'
-                    
+                    sh 'kubectl apply -f resource-manifests/sa-frontend-deployment.yaml'                    
                 }
                 
             }
