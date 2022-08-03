@@ -60,6 +60,7 @@ pipeline {
             }
             steps {
                 script {
+                    sh 'pwd && ls -l'
                     sh 'mkdir test'
                     sh 'whoami'
                     sh 'hostname -i'
