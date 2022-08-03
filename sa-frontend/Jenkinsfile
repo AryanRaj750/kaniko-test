@@ -60,7 +60,8 @@ pipeline {
             }
             steps {
                 script {
-                    bash 'kubectl apply -f resource-manifests/sa-frontend-deployment.yaml'                    
+                    echo $SHELL
+                    sh 'kubectl apply -f resource-manifests/sa-frontend-deployment.yaml'                    
                 }
                 
             }
