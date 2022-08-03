@@ -18,7 +18,7 @@ pipeline {
             steps {
                 echo 'Building Python-App'
                 sh   'docker build -f ./sa-logic/Dockerfile -t sa-logic:latest ./sa-logic'
-                sh   'docker tag sa-logic:latest ${IMAGE_TAG}:${IMAGE_TAG}'
+                sh   'docker tag sa-logic:latest ${IMAGE_NAME}:${IMAGE_TAG}'
             }
         }
         stage('Python-Image-Push') {
@@ -34,7 +34,7 @@ pipeline {
             steps {
                 script {
                     sh 'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com'
-                    sh 'docker push ${IMAGE_TAG}:${IMAGE_TAG}'
+                    sh 'docker push ${IMAGE_NAME}:${IMAGE_TAG}'
                     echo 'Image has Pushed!'
                 }
                 
