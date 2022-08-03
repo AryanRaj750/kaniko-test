@@ -4,11 +4,11 @@ pipeline {
         stage('Python-Image-Build') {
             agent {
                 node {
-                    label 'slave1'
+                    label 'slave2'
                 }
             }
             options {
-                timeout(time: 1, unit: 'HOURS') 
+                timeout(time: 1, unit: 'HOURS')
                 retry(1) 
             }
             steps {
@@ -20,7 +20,7 @@ pipeline {
         stage('Python-Image-Push') {
             agent {
                 node {
-                    label 'slave1'
+                    label 'slave2'
                 }
             }
             options {
@@ -29,29 +29,29 @@ pipeline {
             }
             steps {
                 script {
-                    aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com
-                    docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-logic:v1
+                    sh 'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com'
+                    sh 'docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-logic:v1'
                     echo 'Image has Pushed!'
                 }
                 
             }
         }
-        stage('Deploy-Sa-python-App') {
+        stage('Test-Sa-Logic') {
             agent {
                 node {
                     label 'slave1'
                 }
             }
             options {
-                timeout(time: 1, unit: 'HOURS') 
+                timeout(time: 1, unit: 'HOURS')
                 retry(1) 
             }
             steps {
                 script {
-                    
-                }
-                
+                    microk8s kubectl apply -f resource-manifests/sa-logic-deployment.yaml
+                    microk8s kubectl apply -f resource-manifests/service-sa-logic.yaml                
+                }                
             }
-        }
+        }    
     }
 }

@@ -16,9 +16,6 @@ pipeline {
                 echo 'Building Java-WebApp'
                 sh   'sudo docker build -f ./sa-webapp/Dockerfile -t sa-webapp:latest ./sa-webapp'
                 sh   'sudo docker tag sa-webapp:latest 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp:v1'
-                sh   'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com'
-                sh   'docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp:v1'
-                echo 'Build Java-WebApp has finished!'
             }
         }
         stage('Java-WebApp-Image-Push') {
@@ -33,31 +30,32 @@ pipeline {
             }
             steps {
                 script {
-                    sh   aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com
-                    sh   docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp:v1
+                    sh   'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com'
+                    sh   'docker push 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp:v1'
                     echo 'Image has Pushed!'
                 }
                 
             }
         }
         stage('Deploy-Sa-WebApp') {
-            agent {
-                node {
-                    label 'slave1'
+            stage('Test-Sa-Logic') {
+                agent {
+                    node {
+                        label 'slave1'
+                    }
                 }
-            }
-            options {
-                timeout(time: 1, unit: 'HOURS') 
-                retry(1) 
-            }
-            steps {
-                script {
-                    
+                options {
+                    timeout(time: 1, unit: 'HOURS')
+                    retry(1) 
                 }
-                
-            }
-        }
-        
+                steps {
+                    script {
+                        microk8s kubectl apply -f resource-manifests/sa-web-app-deployment.yaml
+                        microk8s kubectl apply -f resource-manifests/service-sa-web-app-lb.yaml                
+                    }                
+                }
+            }   
+        }        
         
     }
 }

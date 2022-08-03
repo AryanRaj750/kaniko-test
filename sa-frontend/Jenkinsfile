@@ -15,7 +15,7 @@ pipeline {
         stage('React-Frontend-Image-Build') {
             agent {
                 node {
-                    label 'slave1'
+                    label 'slave2'
                 }
             }
             options {
@@ -32,7 +32,7 @@ pipeline {
         stage('React-Frontend-Image-Push') {
             agent {
                 node {
-                    label 'slave1'
+                    label 'slave2'
                 }
             }
             options {
@@ -48,7 +48,7 @@ pipeline {
                 
             }
         }  
-        stage('Deploy-Sa-frontend') {
+        stage('Test-Sa-frontend') {
             agent {
                 node {
                     label 'slave1'
@@ -60,9 +60,9 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'microk8s kubectl apply -f resource-manifests/sa-frontend-deployment.yaml'                    
-                }
-                
+                    sh 'microk8s kubectl apply -f resource-manifests/sa-frontend-deployment.yaml'
+                    sh 'microk8s kubectl apply -f resource-manifests/service-sa-frontend-lb.yaml'                    
+                }                
             }
         }    
         
