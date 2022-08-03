@@ -5,7 +5,7 @@ pipeline {
         stage('Java-WebApp-Image-Build') {
             agent {
                 node {
-                    label 'slave1'
+                    label 'slave2'
                 }
             }
             options {
@@ -21,7 +21,7 @@ pipeline {
         stage('Java-WebApp-Image-Push') {
             agent {
                 node {
-                    label 'slave1'
+                    label 'slave2'
                 }
             }
             options {
@@ -36,26 +36,23 @@ pipeline {
                 }
                 
             }
-        }
-        stage('Deploy-Sa-WebApp') {
-            stage('Test-Sa-Logic') {
-                agent {
-                    node {
-                        label 'slave1'
-                    }
-                }
-                options {
-                    timeout(time: 1, unit: 'HOURS')
-                    retry(1) 
-                }
-                steps {
-                    script {
-                        sh 'microk8s kubectl apply -f resource-manifests/sa-web-app-deployment.yaml'
-                        sh 'microk8s kubectl apply -f resource-manifests/service-sa-web-app-lb.yaml'           
-                    }                
-                }
-            }   
         }        
-        
+        stage('Test-Sa-WebApp') {
+            agent {
+                node {
+                    label 'slave1'
+                }
+            }
+            options {
+                timeout(time: 1, unit: 'HOURS')
+                retry(1) 
+            }
+            steps {
+                script {
+                    sh 'microk8s kubectl apply -f resource-manifests/sa-web-app-deployment.yaml'
+                    sh 'microk8s kubectl apply -f resource-manifests/service-sa-web-app-lb.yaml'           
+                }                
+            }
+        }   
     }
 }
