@@ -9,7 +9,7 @@ spec:
     matchLabels:
       app: sa-frontend
   replicas: 2                                             # 2
-  minReadySeconds: 15
+  minReadySeconds: 30
   strategy:
     type: RollingUpdate                                   # 3
     rollingUpdate: 
