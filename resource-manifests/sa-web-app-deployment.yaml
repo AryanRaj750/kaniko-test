@@ -20,10 +20,10 @@ spec:
       labels:
         app: sa-web-app
     spec:
-      imagePullSecrets:
-      - name: secret-registry
+      # imagePullSecrets:
+      # - name: secret-registry
       containers:
-      - image: 166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp:v1
+      - image: rinormaloku/sentiment-analysis-web-app #166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp:v1
         imagePullPolicy: Always
         name: sa-web-app
         env:
