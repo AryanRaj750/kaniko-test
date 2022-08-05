@@ -1,0 +1,17 @@
+sa-frontend:
+  image: "166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-frontend"
+  version: "v1"
+  serviceType: "NodePort"
+
+sa-web-app:
+  image: "rinormaloku/sentiment-analysis-web-app"
+  version: "latest"
+  serviceType: "NodePort"
+
+sa-logic:
+  image: "166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-logic"
+  version: "v1"
+  serviceType: "ClusterIP"
+
+​reg-secret: "secret-registry"
+SA_LOGIC_API_URL : "http://sa-logic"

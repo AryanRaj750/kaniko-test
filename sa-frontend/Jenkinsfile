@@ -19,7 +19,6 @@ pipeline {
             steps {
                 echo 'Building Front-End React App'
                 sh   "sed  -i 's,http://localhost:8080/sentiment,$JAVA_WEB_API,g' sa-frontend/src/App.js"
-                sh   'cat sa-frontend/src/App.js'
                 sh   'docker build -f ./sa-frontend/Dockerfile -t sa-frontend ./sa-frontend'
                 sh   'docker tag sa-frontend:latest ${IMAGE_NAME}:${IMAGE_TAG}'
                 
