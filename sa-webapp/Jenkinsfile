@@ -53,8 +53,8 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'microk8s kubectl apply -f resource-manifests/sa-web-app-deployment.yaml -n test'
-                    sh 'microk8s kubectl apply -f resource-manifests/service-sa-web-app-lb.yaml -n test'           
+                    sh 'kubectl apply -f resource-manifests/sa-web-app-deployment.yaml -n test'
+                    sh 'kubectl apply -f resource-manifests/service-sa-web-app-lb.yaml -n test'           
                 }                
             }
         }   
