@@ -1,7 +1,7 @@
 pipeline {
     agent none
     environment {
-        JAVA_WEB_API = 'http://54.218.48.57:31127/sentiment'
+        JAVA_WEB_API = 'http://52.41.117.187:31127/sentiment'
         IMAGE_NAME   = '166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-frontend'
         IMAGE_TAG    = 'v1'
     }
