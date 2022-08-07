@@ -21,9 +21,9 @@ spec:
         app: sa-web-app
     spec:
       # imagePullSecrets:
-      # - name: {{ .Values.​reg-secret }}
+      # - name: {{ .Values.reg_secret }}
       containers:
-      - image: "{{ .Values.sa-web-app.image }}:{{ .Values.sa-web-app.version }}" #166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp:v1
+      - image: "{{ .Values.sa_web_app.image }}:{{ .Values.sa_web_app.version }}" #166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp:v1
         imagePullPolicy: Always
         name: sa-web-app
         env:

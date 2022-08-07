@@ -21,9 +21,9 @@ spec:
         app: sa-logic
     spec:
       imagePullSecrets:
-      - name: {{ .Values.​reg-secret }}
+      - name: {{ .Values.reg_secret }}
       containers:
-        - image: "{{ .Values.sa-logic.image }}:{{ .Values.sa-logic.version }}"
+        - image: "{{ .Values.sa_logic.image }}:{{ .Values.sa_logic.version }}"
           imagePullPolicy: Always
           name: sa-logic
           ports:

@@ -21,9 +21,9 @@ spec:
         app: sa-frontend                                  # 6
     spec:
       imagePullSecrets:
-      - name: {{ .Values.​reg-secret }}
+      - name: {{ .Values.reg_secret }}
       containers:
-        - image: "{{ .Values.sa-frontend.image }}:{{ .Values.sa-frontend.version }}"
+        - image: "{{ .Values.sa_frontend.image }}:{{ .Values.sa_frontend.version }}"
           imagePullPolicy: Always                         # 7
           name: sa-frontend
           ports:

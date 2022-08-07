@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: sa-web-app-lb
 spec:
-  type: {{ .Values.sa-web-app.serviceType }}
+  type: {{ .Values.sa_web_app.serviceType }}
   ports:
   - port: 80
     nodePort: 31127
