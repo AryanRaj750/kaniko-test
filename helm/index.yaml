@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  Sentiment-Analyser:
+  - apiVersion: v1
+    appVersion: "1.1"
+    created: "2022-08-07T13:45:12.14269375Z"
+    description: this is my Sentiment-Analyser application
+    digest: c34687221d0b038516b5bd1fcb3d6637f11a2bf862c56612dd41201b5b9c386e
+    name: Sentiment-Analyser
+    urls:
+    - Chart/Sentiment-Analyser-0.1.tgz
+    version: "0.1"
+generated: "2022-08-07T13:45:12.141989409Z"
