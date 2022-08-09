@@ -1,8 +1,7 @@
-FROM    aryan750/jdk-maven:v1 as builder
+FROM    maven:3.6.0-jdk-11-slim as builder
 COPY    ./*  /source/
 WORKDIR /source/
-RUN     /maven3/bin/mvn install && \
-        ls -l target
+RUN     mvn clean package
 
 FROM    openjdk:8-jdk-alpine
 # Environment Variable that defines the endpoint of sentiment-analysis python api.
