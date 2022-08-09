@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            label 'slave1'
-        }
-    }
+    agent any
     environment {
         JAVA_WEB_API = 'http://52.41.117.187:31127/sentiment'
         APP_NAME = "sa-frontend"

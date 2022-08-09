@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
     environment {
         APP_NAME = "sa-webapp"
         REGION = "us-west-2"
@@ -9,11 +9,7 @@ pipeline {
     stages {
         
         stage('Java-WebApp-Image-Build') {
-            agent {
-                node {
-                    label 'slave2'
-                }
-            }
+            
             options {
                 timeout(time: 1, unit: 'HOURS') 
                 retry(1) 
@@ -25,11 +21,7 @@ pipeline {
             }
         }
         stage('Java-WebApp-Image-Push') {
-            agent {
-                node {
-                    label 'slave2'
-                }
-            }
+            
             options {
                 timeout(time: 1, unit: 'HOURS') 
                 retry(1) 

@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        docker { image 'docker:dind' }
-    }
+    agent any
     environment {
         APP_NAME = "sa-logic"
         REGION = "us-west-2"
@@ -10,11 +8,7 @@ pipeline {
     }
     stages {
         stage('Python-Image-Build') {
-            agent {
-                node {
-                    label 'slave2'
-                }
-            }
+            
             options {
                 timeout(time: 1, unit: 'HOURS')
                 retry(1) 
@@ -26,11 +20,7 @@ pipeline {
             }
         }
         stage('Python-Image-Push') {
-            agent {
-                node {
-                    label 'slave2'
-                }
-            }
+            
             options {
                 timeout(time: 1, unit: 'HOURS') 
                 retry(1) 
