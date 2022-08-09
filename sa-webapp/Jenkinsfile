@@ -48,10 +48,12 @@ pipeline {
             
             steps {                
                 git credentialsId: 'GITHUB', url: 'https://github.com/AryanRaj750/helm.git'
-                sh 'ls -la'
+                sh   'ls -la'
                 sh   "sed -i 's/sa_frontend_version: v1/sa_frontend_version: v$BUILD_ID/g' Sentiment-Analyser/values.yaml"
+                sh   "cat Sentiment-Analyser/values.yaml"
+                sh   "git status"
                 sh   "git add ."
-                sh   "git commit -m 'new build $BUILD_ID'"
+                sh   'git commit -m "new build $BUILD_ID"  '
                 sh   "git push"
                 echo 'Helm repo updated!'                
                 
