@@ -49,12 +49,10 @@ pipeline {
             steps {                
                 git credentialsId: 'GITHUB', url: 'https://github.com/AryanRaj750/helm.git'
                 sh   "sed -i 's/sa_frontend_version: v1/sa_frontend_version: v$BUILD_ID/g' Sentiment-Analyser/values.yaml"
-                sh   "cat Sentiment-Analyser/values.yaml"
-                sh   "git status"
-                sh   "git config --global  user.name AryanRaj750 && git config --global user.email 'Ar9131000@gmail.com'"
+                // sh   "git config --global  user.name AryanRaj750 && git config --global user.email 'Ar9131000@gmail.com'"
                 sh   "git add ."
                 sh   'git commit -m "new build $BUILD_ID"  '
-                sh   'git remote set-url origin https://AryanRaj750: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@github.com/AryanRaj750/helm.git'
+                // sh   'git remote set-url origin https://AryanRaj750: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@github.com/AryanRaj750/helm.git'
                 sh   "git push origin master"
                 echo 'Helm repo updated!'                
                 
