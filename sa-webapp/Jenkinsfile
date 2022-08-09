@@ -56,7 +56,7 @@ pipeline {
                 sh   "git config --global  user.name AryanRaj750 && git config --global user.email 'Ar9131000@gmail.com'"
                 sh   "git add ."
                 sh   'git commit -m "new build $BUILD_ID"  '
-                sh   'git remote -v'
+                sh   'git remote add origin https://github.com/AryanRaj750/helm.git'
                 sh   "git push origin master"
                 echo 'Helm repo updated!'                
                 
