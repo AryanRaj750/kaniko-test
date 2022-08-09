@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
     environment {
         JAVA_WEB_API = 'http://52.41.117.187:31127/sentiment'
         APP_NAME = "sa-frontend"
@@ -8,12 +8,7 @@ pipeline {
         REPO_NAME   = 'sa-frontend'
     }
     stages {
-        stage('React-Frontend-Image-Build') {
-            agent {
-                node {
-                    label 'slave2'
-                }
-            }
+        stage('React-Frontend-Image-Build') {            
             options {
                 timeout(time: 1, unit: 'HOURS') 
                 retry(1) 
@@ -26,12 +21,7 @@ pipeline {
                 
             }
         }   
-        stage('React-Frontend-Image-Push') {
-            agent {
-                node {
-                    label 'slave2'
-                }
-            }
+        stage('React-Frontend-Image-Push') {            
             options {
                 timeout(time: 1, unit: 'HOURS') 
                 retry(1) 
