@@ -46,8 +46,7 @@ pipeline {
                 retry(1) 
             }
             
-            steps {                
-                steps {                
+            steps {                               
                 withCredentials([usernamePassword(credentialsId: 'GITHUB', passwordVariable: 'GIT_PASSWD', usernameVariable: 'GIT_USER')]) 
                 {
                     sh """
@@ -60,8 +59,7 @@ pipeline {
                     git commit -m "new build $BUILD_ID"
                     git push origin master
                     """
-                }             
-            }                
+                }                         
                 
             }
         }        

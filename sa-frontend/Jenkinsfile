@@ -46,10 +46,8 @@ pipeline {
                 retry(1) 
             }
             
-            steps {                
-                steps {                
-                withCredentials([usernamePassword(credentialsId: 'GITHUB', passwordVariable: 'GIT_PASSWD', usernameVariable: 'GIT_USER')]) 
-                {
+            steps {                               
+                withCredentials([usernamePassword(credentialsId: 'GITHUB', passwordVariable: 'GIT_PASSWD', usernameVariable: 'GIT_USER')]){
                     sh """
                     rm -rf helm/
                     git clone https://github.com/AryanRaj750/helm.git
@@ -61,8 +59,7 @@ pipeline {
                     git commit -m "new build $BUILD_ID"
                     git push origin master
                     """
-                }             
-            }              
+                }                      
                 
             }
         } 
