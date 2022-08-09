@@ -38,6 +38,21 @@ pipeline {
                 }
                 
             }
+        }
+        stage('Update helm chart Release Version') {
+            
+            options {
+                timeout(time: 1, unit: 'HOURS') 
+                retry(1) 
+            }
+            steps {
+                script {
+                    sh   'git clone https://github.com/AryanRaj750/helm.git'
+                    sh   "sed -i '0,/^\([[:space:]]*version: *\).*/s//\v$BUILD_ID/;' Sentiment-Analyser/values.yaml "
+                    echo 'Image has Pushed!'
+                }
+                
+            }
         }        
          
     }
