@@ -1,4 +1,4 @@
-FROM    aryan750/jdk-maven:v1 as builder
+FROM    maven:3.6.0-jdk-11-slim as builder
 COPY    ./*  /source/
 WORKDIR /source/
 RUN     mvn clean package
