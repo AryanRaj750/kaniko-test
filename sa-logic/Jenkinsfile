@@ -20,7 +20,7 @@ pipeline {
             steps {
                 echo 'Building Python-App'
                 sh   'sudo docker build -f ./sa-logic/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-logic'
-                sh   'sudo docker tag   ${APP_NAME}:$BUILD_ID  ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
+                sh   'sudo docker tag   ${APP_NAME}:v$BUILD_ID  ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
             }
         }
         stage('Python-Image-Push') {

@@ -21,7 +21,7 @@ pipeline {
             steps {
                 echo 'Building Java-WebApp'
                 sh   'sudo docker build -f ./sa-webapp/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-webapp'
-                sh   'sudo docker tag ${APP_NAME}:$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
+                sh   'sudo docker tag ${APP_NAME}:v$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
             }
         }
         stage('Java-WebApp-Image-Push') {

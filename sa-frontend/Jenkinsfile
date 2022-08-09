@@ -21,7 +21,7 @@ pipeline {
                 echo 'Building Front-End React App'
                 sh   "sed  -i 's,http://localhost:8080/sentiment,$JAVA_WEB_API,g' sa-frontend/src/App.js"
                 sh   'sudo docker build -f ./sa-frontend/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-frontend'
-                sh   'sudo docker tag ${APP_NAME}:$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
+                sh   'sudo docker tag ${APP_NAME}:v$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
                 
             }
         }   
