@@ -47,19 +47,16 @@ pipeline {
             }
             
             steps {                               
-                withCredentials([usernamePassword(credentialsId: 'GITHUB', passwordVariable: 'GIT_PASSWD', usernameVariable: 'GIT_USER')]) 
-                {
-                    sh """
-                    rm -rf helm/
-                    git clone https://github.com/AryanRaj750/helm.git
-                    sed -i 's/sa_web_app_version: v1/sa_web_app_version: v$BUILD_ID/g' helm/Sentiment-Analyser/values.yaml
-                    cd /helm
-                    git remote set-url origin https://${GIT_USER}:${GIT_PASSWD}@github.com/AryanRaj750/helm.git
+                withCredentials([usernamePassword(credentialsId: 'GITHUB', passwordVariable: 'GIT_PASSWD', usernameVariable: 'GIT_USER')]){
+                    git credentialsId: 'GITHUB', url: 'https://github.com/AryanRaj750/helm.git'
+                    sh """                 
+                    sed -i 's/.*sa_web_app_version.*/sa_web_app_version: v$BUILD_ID/g' Sentiment-Analyser/values.yaml                  
+                    git remote set-url origin https://${GIT_PASSWD}@github.com/AryanRaj750/helm.git
                     git add .
-                    git commit -m "new build $BUILD_ID"
+                    git commit -m 'new build $BUILD_ID'
                     git push origin master
                     """
-                }                         
+                }                      
                 
             }
         }        
