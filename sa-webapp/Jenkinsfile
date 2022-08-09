@@ -20,8 +20,8 @@ pipeline {
             }
             steps {
                 echo 'Building Java-WebApp'
-                sh   'sudo docker build -f ./sa-webapp/Dockerfile -t ${APP_NAME}:$BUILD_ID ./sa-webapp'
-                sh   'sudo docker tag ${APP_NAME}:$BUILD_ID ${ECR_URI}/${REPO_NAME}:$BUILD_ID'
+                sh   'sudo docker build -f ./sa-webapp/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-webapp'
+                sh   'sudo docker tag ${APP_NAME}:$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
             }
         }
         stage('Java-WebApp-Image-Push') {
@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                     sh   'aws ecr get-login-password --region ${REGION} | sudo docker login --username AWS --password-stdin ${ECR_URI}'
-                    sh   'sudo docker push ${ECR_URI}/${REPO_NAME}:$BUILD_ID'
+                    sh   'sudo docker push ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
                     echo 'Image has Pushed!'
                 }
                 
