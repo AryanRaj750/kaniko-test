@@ -46,19 +46,15 @@ pipeline {
             }
             
             steps {                
-                withCredentials([usernamePassword(credentialsId: 'GITHUB', passwordVariable: 'GIT_PASSWD', usernameVariable: 'GIT_USER')]) 
-                {
-                    sh """
-                    rm -rf helm/
-                    git clone https://github.com/AryanRaj750/helm.git
-                    sed -i 's/sa_logic_version: v1/sa_logic_version: v$BUILD_ID/g' helm/Sentiment-Analyser/values.yaml
-                    cd /helm
-                    git remote set-url origin https://AryanRaj750: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@github.com/AryanRaj750/helm.git
-                    git add .
-                    git commit -m "new build $BUILD_ID"
-                    git push origin master
-                    """
-                }             
+                git credentialsId: 'GITHUB', url: 'https://github.com/AryanRaj750/helm.git'
+                sh   "sed -i 's/sa_logic_version: v1/sa_logic_version: v$BUILD_ID/g' Sentiment-Analyser/values.yaml"
+                // sh   "git config --global  user.name AryanRaj750 && git config --global user.email 'Ar9131000@gmail.com'"
+                sh   "git add ."
+                sh   'git commit -m "new build $BUILD_ID"  '
+                sh   'git remote set-url origin https://AryanRaj750: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@github.com/AryanRaj750/helm.git'
+                sh   "git push origin master"
+                echo 'Helm repo updated!'                
+                
             }
         }        
     }
