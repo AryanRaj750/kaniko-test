@@ -1,62 +1,48 @@
 pipeline {
     agent none
     environment {
-        IMAGE_NAME   = '166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-webapp'
-        IMAGE_TAG    = 'v1'
+        APP_NAME = "sa-webapp"
+        REGION = "us-west-2"
+        ECR_URI = "166287152401.dkr.ecr.us-west-2.amazonaws.com"
+        REPO_NAME   = 'sa-webapp'
     }
     stages {
         
-        // stage('Java-WebApp-Image-Build') {
-        //     agent {
-        //         node {
-        //             label 'slave2'
-        //         }
-        //     }
-        //     options {
-        //         timeout(time: 1, unit: 'HOURS') 
-        //         retry(1) 
-        //     }
-        //     steps {
-        //         echo 'Building Java-WebApp'
-        //         sh   'sudo docker build -f ./sa-webapp/Dockerfile -t sa-webapp:latest ./sa-webapp'
-        //         sh   'sudo docker tag sa-webapp:latest ${IMAGE_NAME}:${IMAGE_TAG}'
-        //     }
-        // }
-        // stage('Java-WebApp-Image-Push') {
-        //     agent {
-        //         node {
-        //             label 'slave2'
-        //         }
-        //     }
-        //     options {
-        //         timeout(time: 1, unit: 'HOURS') 
-        //         retry(1) 
-        //     }
-        //     steps {
-        //         script {
-        //             sh   'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com'
-        //             sh   'docker push ${IMAGE_NAME}:${IMAGE_TAG}'
-        //             echo 'Image has Pushed!'
-        //         }
-                
-        //     }
-        // }        
-        stage('Test-Sa-WebApp') {
+        stage('Java-WebApp-Image-Build') {
             agent {
                 node {
-                    label 'slave1'
+                    label 'slave2'
                 }
             }
             options {
-                timeout(time: 1, unit: 'HOURS')
+                timeout(time: 1, unit: 'HOURS') 
+                retry(1) 
+            }
+            steps {
+                echo 'Building Java-WebApp'
+                sh   'sudo docker build -f ./sa-webapp/Dockerfile -t ${APP_NAME}:$BUILD_ID ./sa-webapp'
+                sh   'sudo docker tag ${APP_NAME}:$BUILD_ID ${ECR_URI}/${REPO_NAME}:$BUILD_ID'
+            }
+        }
+        stage('Java-WebApp-Image-Push') {
+            agent {
+                node {
+                    label 'slave2'
+                }
+            }
+            options {
+                timeout(time: 1, unit: 'HOURS') 
                 retry(1) 
             }
             steps {
                 script {
-                    sh 'kubectl apply -f resource-manifests/sa-web-app-deployment.yaml -n test'
-                    sh 'kubectl apply -f resource-manifests/service-sa-web-app-lb.yaml -n test'           
-                }                
+                    sh   'aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URI}'
+                    sh   'docker push ${ECR_URI}/${REPO_NAME}:$BUILD_ID'
+                    echo 'Image has Pushed!'
+                }
+                
             }
-        }   
+        }        
+         
     }
 }

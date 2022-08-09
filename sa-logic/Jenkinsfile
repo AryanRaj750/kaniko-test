@@ -1,8 +1,10 @@
 pipeline {
     agent none
     environment {
-        IMAGE_NAME   = '166287152401.dkr.ecr.us-west-2.amazonaws.com/sa-logic'
-        IMAGE_TAG    = 'v1'
+        APP_NAME = "sa-logic"
+        REGION = "us-west-2"
+        ECR_URI = "166287152401.dkr.ecr.us-west-2.amazonaws.com"
+        REPO_NAME   = 'sa-logic'
     }
     stages {
         stage('Python-Image-Build') {
@@ -17,8 +19,8 @@ pipeline {
             }
             steps {
                 echo 'Building Python-App'
-                sh   'docker build -f ./sa-logic/Dockerfile -t sa-logic:latest ./sa-logic'
-                sh   'docker tag sa-logic:latest ${IMAGE_NAME}:${IMAGE_TAG}'
+                sh   'docker build -f ./sa-logic/Dockerfile -t ${APP_NAME}:$BUILD_ID ./sa-logic'
+                sh   'sudo docker tag   ${APP_NAME}:$BUILD_ID  ${ECR_URI}/${REPO_NAME}:$BUILD_ID'
             }
         }
         stage('Python-Image-Push') {
@@ -33,29 +35,12 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 166287152401.dkr.ecr.us-west-2.amazonaws.com'
-                    sh 'docker push ${IMAGE_NAME}:${IMAGE_TAG}'
+                    sh   'aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URI}'
+                    sh   'docker push ${ECR_URI}/${REPO_NAME}:$BUILD_ID'
                     echo 'Image has Pushed!'
                 }
                 
             }
-        }
-        stage('Test-Sa-Logic') {
-            agent {
-                node {
-                    label 'slave1'
-                }
-            }
-            options {
-                timeout(time: 1, unit: 'HOURS')
-                retry(1) 
-            }
-            steps {
-                script {
-                    sh 'kubectl apply -f resource-manifests/sa-logic-deployment.yaml -n test'
-                    sh 'kubectl apply -f resource-manifests/service-sa-logic.yaml -n test'
-                }                
-            }
-        }    
+        }          
     }
 }
