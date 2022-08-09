@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        docker { image 'docker:dind' }
+    }
     environment {
         JAVA_WEB_API = 'http://52.41.117.187:31127/sentiment'
         APP_NAME = "sa-frontend"
