@@ -45,6 +45,7 @@ pipeline {
                 timeout(time: 1, unit: 'HOURS') 
                 retry(1) 
             }
+            git credentialsId: 'GITHUB', url: 'https://github.com/AryanRaj750/helm.git'
             steps {
                 script {
                     sh   'git clone https://github.com/AryanRaj750/helm.git'
