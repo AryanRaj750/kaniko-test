@@ -54,7 +54,7 @@ pipeline {
                 sh   "git status"
                 sh   "git add ."
                 sh   'git commit -m "new build $BUILD_ID"  '
-                sh   "git push"
+                sh   "git push origin master"
                 echo 'Helm repo updated!'                
                 
             }
