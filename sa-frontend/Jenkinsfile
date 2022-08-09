@@ -50,7 +50,6 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'GITHUB', passwordVariable: 'GIT_PASSWD', usernameVariable: 'GIT_USER')]){
                     git credentialsId: 'GITHUB', url: 'https://github.com/AryanRaj750/helm.git'
                     sh """
-                    rm -rf helm/
                     echo ${GIT_USER} ${GIT_PASSWD} $GIT_USER                    
                     sed -i 's/sa_frontend_version: v1/sa_frontend_version: v$BUILD_ID/g' Sentiment-Analyser/values.yaml
                     cd /helm                    
