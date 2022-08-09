@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        node {
+            label 'slave1'
+        }
+    }
     environment {
         APP_NAME = "sa-logic"
         REGION = "us-west-2"
