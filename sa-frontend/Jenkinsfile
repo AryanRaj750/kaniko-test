@@ -55,7 +55,8 @@ pipeline {
                     git clone https://github.com/AryanRaj750/helm.git
                     sed -i 's/sa_frontend_version: v1/sa_frontend_version: v$BUILD_ID/g' helm/Sentiment-Analyser/values.yaml
                     cd /helm
-                    git remote set-url origin https://${GIT_USER}:${GIT_PASSWD}@github.com/AryanRaj750/helm.git
+                    echo ${GIT_USER} ${GIT_PASSWD}
+                    git remote set-url origin https://${GIT_PASSWD}@github.com/AryanRaj750/helm.git
                     git add .
                     git commit -m "new build $BUILD_ID"
                     git push origin master
