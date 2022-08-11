@@ -3,6 +3,7 @@ pipeline {
         label 'slave2'        
     } 
     environment {
+        SSM_PARAMETER_WEBAPP = "webapp-url"
         APP_NAME = "sa-frontend"
         REGION = "us-west-2"
         ECR_URI = "166287152401.dkr.ecr.us-west-2.amazonaws.com"
@@ -19,7 +20,7 @@ pipeline {
             steps {
                 sh '''
                     echo 'Building Front-End React App'
-                    webapi=`aws ssm get-parameters --name webapp-url --query Parameters[0] | jq -r .Value`
+                    webapi=`aws ssm get-parameters --name ${SSM_PARAMETER_WEBAPP} --query Parameters[0] | jq -r .Value`
                     sed  -i 's,http://localhost:8080/sentiment,'$webapi',g' sa-frontend/src/App.js
                     docker build -f ./sa-frontend/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-frontend
                     docker tag ${APP_NAME}:v$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID
