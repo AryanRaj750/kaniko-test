@@ -3,7 +3,6 @@ pipeline {
         label 'slave2'        
     } 
     environment {
-        JAVA_WEB_API = 'http://52.41.117.187:31127/sentiment'
         APP_NAME = "sa-frontend"
         REGION = "us-west-2"
         ECR_URI = "166287152401.dkr.ecr.us-west-2.amazonaws.com"
@@ -19,6 +18,7 @@ pipeline {
             }
             steps {
                 echo 'Building Front-End React App'
+                sh   "JAVA_WEB_API=$(aws ssm get-parameters --name webapp-url --profile aryan --query Parameters[0] | jq -r .Value)"
                 sh   "sed  -i 's,http://localhost:8080/sentiment,$JAVA_WEB_API,g' sa-frontend/src/App.js"
                 sh   'docker build -f ./sa-frontend/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-frontend'
                 sh   'docker tag ${APP_NAME}:v$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
