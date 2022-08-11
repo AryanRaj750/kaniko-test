@@ -2,6 +2,8 @@ FROM maven:3.6.0-jdk-11-slim AS build
 WORKDIR /app
 COPY . .
 RUN mvn  clean package
+
+
 FROM openjdk:11-jre-slim
 # Environment Variable that defines the endpoint of sentiment-analysis python api.
 ENV SA_LOGIC_API_URL http://sa-logic:5000
