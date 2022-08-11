@@ -19,7 +19,7 @@ pipeline {
             steps {
                 echo 'Building Front-End React App'
                 sh   "JAVA_WEB_API=`aws ssm get-parameters --name webapp-url --query Parameters[0] | jq -r .Value`"
-                sh   "sed  -i 's,http://localhost:8080/sentiment,$JAVA_WEB_API,g' sa-frontend/src/App.js"
+                sh   "sed  -i 's,http://localhost:8080/sentiment,${JAVA_WEB_API},g' sa-frontend/src/App.js"
                 sh   'docker build -f ./sa-frontend/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-frontend'
                 sh   'docker tag ${APP_NAME}:v$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
                 
