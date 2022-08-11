@@ -1,10 +1,8 @@
 pipeline {
     agent {
-        type 'docker'
+        
         label 'slave2'
-        // docker {
-        //     label 'slave2'
-        // }
+        
     } 
     environment {
         JAVA_WEB_API = 'http://52.41.117.187:31127/sentiment'
