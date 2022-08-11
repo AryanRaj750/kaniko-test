@@ -30,16 +30,15 @@ pipeline {
         }   
         stage('React-Frontend-Image-Push') {            
             options {
-                timeout(time: 1, unit: 'HOURS') 
+                timeout(time: 1, unit: 'HOURS')
                 retry(1) 
             }
-            steps {
-                script {
-                    sh   'aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URI}'
-                    sh   'docker push ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
+            steps {                
+                sh '''
+                    aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URI}
+                    docker push ${ECR_URI}/${REPO_NAME}:v$BUILD_ID
                     echo 'Image has Pushed!'
-                }
-                
+                '''
             }
         }       
         stage('Update helm chart Release Version') {
@@ -53,13 +52,13 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'GITHUB', passwordVariable: 'GIT_PASSWD', usernameVariable: 'GIT_USER')]){
                     git credentialsId: 'GITHUB', url: 'https://github.com/AryanRaj750/helm.git'
                     sh """                 
-                    sed -i 's/.*sa_frontend_version.*/sa_frontend_version: v$BUILD_ID/g' Sentiment-Analyser/values.yaml                  
-                    git remote set-url origin https://${GIT_PASSWD}@github.com/AryanRaj750/helm.git
-                    git add .
-                    git config --global user.email ${EMAIL}
-                    git config --global user.name ${USER}
-                    git commit -m 'new build $BUILD_ID'
-                    git push origin master
+                        sed -i 's/.*sa_frontend_version.*/sa_frontend_version: v$BUILD_ID/g' Sentiment-Analyser/values.yaml                  
+                        git remote set-url origin https://${GIT_PASSWD}@github.com/AryanRaj750/helm.git
+                        git add .
+                        git config --global user.email ${EMAIL}
+                        git config --global user.name ${USER}
+                        git commit -m 'new build $BUILD_ID'
+                        git push origin master
                     """
                 }                      
                 

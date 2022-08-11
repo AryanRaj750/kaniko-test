@@ -12,51 +12,50 @@ pipeline {
     }
     stages {
         
-        stage('Java-WebApp-Image-Build') {
-            
+        stage('Java-WebApp-Image-Build') {            
             options {
                 timeout(time: 1, unit: 'HOURS') 
                 retry(1) 
             }
             steps {
-                echo 'Building Java-WebApp'
-                sh   'docker build -f ./sa-webapp/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-webapp'
-                sh   'docker tag ${APP_NAME}:v$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
+                sh '''
+                    echo 'Building Java-WebApp'
+                    docker build -f ./sa-webapp/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-webapp
+                    docker tag ${APP_NAME}:v$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID
+                '''
             }
         }
-        stage('Java-WebApp-Image-Push') {
-            
+        
+        stage('Java-WebApp-Image-Push') {            
             options {
                 timeout(time: 1, unit: 'HOURS') 
                 retry(1) 
             }
             steps {
-                script {
-                    sh   'aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URI}'
-                    sh   'docker push ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
+                sh '''
+                    aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URI}
+                    docker push ${ECR_URI}/${REPO_NAME}:v$BUILD_ID
                     echo 'Image has Pushed!'
-                }
-                
+                '''
             }
         }
-        stage('Update helm chart Release Version') {
-            
+
+        stage('Update helm chart Release Version') {            
             options {
                 timeout(time: 1, unit: 'HOURS') 
                 retry(1) 
-            }
-            
+            }            
             steps {                               
                 withCredentials([usernamePassword(credentialsId: 'GITHUB', passwordVariable: 'GIT_PASSWD', usernameVariable: 'GIT_USER')]){
                     git credentialsId: 'GITHUB', url: 'https://github.com/AryanRaj750/helm.git'
                     sh """                 
-                    sed -i 's/.*sa_web_app_version.*/sa_web_app_version: v$BUILD_ID/g' Sentiment-Analyser/values.yaml                  
-                    git remote set-url origin https://${GIT_PASSWD}@github.com/AryanRaj750/helm.git
-                    git add .
-                    git config --global user.email ${EMAIL}
-                    git config --global user.name ${USER}
-                    git commit -m 'new build $BUILD_ID'
-                    git push origin master
+                        sed -i 's/.*sa_web_app_version.*/sa_web_app_version: v$BUILD_ID/g' Sentiment-Analyser/values.yaml                  
+                        git remote set-url origin https://${GIT_PASSWD}@github.com/AryanRaj750/helm.git
+                        git add .
+                        git config --global user.email ${EMAIL}
+                        git config --global user.name ${USER}
+                        git commit -m 'new build $BUILD_ID'
+                        git push origin master
                     """
                 }                      
                 
