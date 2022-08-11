@@ -1,9 +1,10 @@
 pipeline {
-    agent {
-        docker {
-            label 'slave2'
-        }
-    } 
+    agent 'slave2'
+    // {
+    //     docker {
+    //         label 
+    //     }
+    // } 
     environment {
         APP_NAME = "sa-webapp"
         REGION = "us-west-2"
