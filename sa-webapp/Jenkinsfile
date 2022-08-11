@@ -1,11 +1,7 @@
 pipeline {
-    agent {
-        type 'docker'
-        label 'slave2'
-        // docker {
-        //     label 
-        // }
-    } 
+    agent {        
+        label 'slave2'        
+    }  
     environment {
         APP_NAME = "sa-webapp"
         REGION = "us-west-2"
@@ -22,8 +18,8 @@ pipeline {
             }
             steps {
                 echo 'Building Java-WebApp'
-                sh   'sudo docker build -f ./sa-webapp/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-webapp'
-                sh   'sudo docker tag ${APP_NAME}:v$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
+                sh   'docker build -f ./sa-webapp/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-webapp'
+                sh   'docker tag ${APP_NAME}:v$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
             }
         }
         stage('Java-WebApp-Image-Push') {
@@ -34,8 +30,8 @@ pipeline {
             }
             steps {
                 script {
-                    sh   'aws ecr get-login-password --region ${REGION} | sudo docker login --username AWS --password-stdin ${ECR_URI}'
-                    sh   'sudo docker push ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
+                    sh   'aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URI}'
+                    sh   'docker push ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
                     echo 'Image has Pushed!'
                 }
                 

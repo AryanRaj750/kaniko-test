@@ -1,8 +1,6 @@
 pipeline {
-    agent {
-        
-        label 'slave2'
-        
+    agent {        
+        label 'slave2'        
     } 
     environment {
         JAVA_WEB_API = 'http://52.41.117.187:31127/sentiment'
@@ -20,8 +18,8 @@ pipeline {
             steps {
                 echo 'Building Front-End React App'
                 sh   "sed  -i 's,http://localhost:8080/sentiment,$JAVA_WEB_API,g' sa-frontend/src/App.js"
-                sh   'sudo docker build -f ./sa-frontend/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-frontend'
-                sh   'sudo docker tag ${APP_NAME}:v$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
+                sh   'docker build -f ./sa-frontend/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-frontend'
+                sh   'docker tag ${APP_NAME}:v$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
                 
             }
         }   
@@ -32,8 +30,8 @@ pipeline {
             }
             steps {
                 script {
-                    sh   'aws ecr get-login-password --region ${REGION} | sudo docker login --username AWS --password-stdin ${ECR_URI}'
-                    sh   'sudo docker push ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
+                    sh   'aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URI}'
+                    sh   'docker push ${ECR_URI}/${REPO_NAME}:v$BUILD_ID'
                     echo 'Image has Pushed!'
                 }
                 
