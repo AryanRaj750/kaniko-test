@@ -8,6 +8,8 @@ pipeline {
         REGION = "us-west-2"
         ECR_URI = "166287152401.dkr.ecr.us-west-2.amazonaws.com"
         REPO_NAME   = 'sa-frontend'
+        USER = "Aryan Raj"
+        EMAIL = "Ar9131000@gmail.com"
     }
     stages {
         stage('React-Frontend-Image-Build') {            
@@ -51,6 +53,8 @@ pipeline {
                     sed -i 's/.*sa_frontend_version.*/sa_frontend_version: v$BUILD_ID/g' Sentiment-Analyser/values.yaml                  
                     git remote set-url origin https://${GIT_PASSWD}@github.com/AryanRaj750/helm.git
                     git add .
+                    git config --global user.email ${EMAIL}
+                    git config --global user.name ${USER}
                     git commit -m 'new build $BUILD_ID'
                     git push origin master
                     """
