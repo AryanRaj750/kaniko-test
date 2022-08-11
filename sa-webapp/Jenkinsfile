@@ -1,8 +1,10 @@
 pipeline {
     agent {
-        docker {
-            label 
-        }
+        type 'docker'
+        label 'slave2'
+        // docker {
+        //     label 
+        // }
     } 
     environment {
         APP_NAME = "sa-webapp"
