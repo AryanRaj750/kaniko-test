@@ -58,13 +58,13 @@ pipeline {
             }
             steps {
                 container('sentiment') {
-                sh '''
-                    echo 'Building Front-End React App'
-                    webapi=`aws ssm get-parameters --name ${SSM_PARAMETER_WEBAPP} --query Parameters[0] | jq -r .Value`
-                    sed  -i 's,http://localhost:8080/sentiment,'$webapi',g' sa-frontend/src/App.js
-                    docker build -f ./sa-frontend/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-frontend
-                    docker tag ${APP_NAME}:v$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID
-                '''
+                    sh '''
+                        echo 'Building Front-End React App'
+                        webapi=`aws ssm get-parameters --name ${SSM_PARAMETER_WEBAPP} --query Parameters[0] | jq -r .Value`
+                        sed  -i 's,http://localhost:8080/sentiment,'$webapi',g' sa-frontend/src/App.js
+                        docker build -f ./sa-frontend/Dockerfile -t ${APP_NAME}:v$BUILD_ID ./sa-frontend
+                        docker tag ${APP_NAME}:v$BUILD_ID ${ECR_URI}/${REPO_NAME}:v$BUILD_ID
+                    '''
                 }                
             }
         }   
@@ -75,11 +75,11 @@ pipeline {
             }
             steps {  
                 container('sentiment') {              
-                sh '''
-                    aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URI}
-                    docker push ${ECR_URI}/${REPO_NAME}:v$BUILD_ID
-                    echo 'Image has Pushed!'
-                '''
+                    sh '''
+                        aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URI}
+                        docker push ${ECR_URI}/${REPO_NAME}:v$BUILD_ID
+                        echo 'Image has Pushed!'
+                    '''
                 }
             }
         }       
@@ -92,19 +92,19 @@ pipeline {
             
             steps {  
                 container('sentiment') {                             
-                withCredentials([usernamePassword(credentialsId: 'GITHUB', passwordVariable: 'GIT_PASSWD', usernameVariable: 'GIT_USER')]){
-                    git credentialsId: 'GITHUB', url: 'https://github.com/AryanRaj750/helm.git'
-                    sh """                 
-                        sed -i 's/.*sa_frontend_version.*/sa_frontend_version: v$BUILD_ID/g' Sentiment-Analyser/values.yaml                  
-                        git config --global --add safe.directory /home/jenkins/agent/workspace/$JOB_NAME
-                        git remote set-url origin https://${GIT_PASSWD}@github.com/AryanRaj750/helm.git                        
-                        git add .
-                        git config --global user.email ${EMAIL}
-                        git config --global user.name ${USER}
-                        git commit -m 'new build $BUILD_ID'
-                        git push origin master
-                    """
-                }            
+                    withCredentials([usernamePassword(credentialsId: 'GITHUB', passwordVariable: 'GIT_PASSWD', usernameVariable: 'GIT_USER')]){
+                        git credentialsId: 'GITHUB', url: 'https://github.com/AryanRaj750/helm.git'
+                        sh """                 
+                            sed -i 's/.*sa_frontend_version.*/sa_frontend_version: v$BUILD_ID/g' Sentiment-Analyser/values.yaml                  
+                            git config --global --add safe.directory /home/jenkins/agent/workspace/$JOB_NAME
+                            git remote set-url origin https://${GIT_PASSWD}@github.com/AryanRaj750/helm.git                        
+                            git add .
+                            git config --global user.email ${EMAIL}
+                            git config --global user.name ${USER}
+                            git commit -m 'new build $BUILD_ID'
+                            git push origin master
+                        """
+                    }            
                 }         
                 
             }
