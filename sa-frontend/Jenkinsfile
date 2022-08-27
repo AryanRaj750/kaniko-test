@@ -42,11 +42,11 @@ pipeline {
         }
     }
     environment {
-        SSM_PARAMETER_WEBAPP = "webapp-url"
+        SSM_PARAMETER_WEBAPP = "/aryan/webapp/url"
         APP_NAME = "sa-frontend"
         REGION = "us-west-2"
-        ECR_URI = "166287152401.dkr.ecr.us-west-2.amazonaws.com"
-        REPO_NAME   = 'sa-frontend'
+        ECR_URI = "421320058418.dkr.ecr.us-west-2.amazonaws.com"
+        REPO_NAME   = 'aryan-sa-frontend'
         USER = "Aryan Raj"
         EMAIL = "Ar9131000@gmail.com"
     }
