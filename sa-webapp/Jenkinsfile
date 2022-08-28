@@ -29,7 +29,10 @@ pipeline {
                         name: aws-credentials
                         key: region
                   - name: DOCKER_HOST
-                    value: tcp://35.91.217.78:4243
+                    valueFrom:
+                      secretKeyRef:
+                        name: docker-host
+                        key: docker-host
 
                   volumeMounts:
                   - mountPath: /var/run/docker.sock
