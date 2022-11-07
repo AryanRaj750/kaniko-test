@@ -12,7 +12,7 @@ spec:
     tty: true
     volumeMounts:
     - name: kaniko-secret
-      mountPath: "/kaniko/.docker"
+      mountPath: "/kaniko/.docker/config.json"
   volumes:
   - name: kaniko-secret
     secret:
