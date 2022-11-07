@@ -14,8 +14,7 @@ pipeline {
                 /kaniko/executor --dockerfile=Dockerfile
                                  --context=""
                                  --destination=aryan750/test-kaniko:v1
-              ''''
-               
+              '''               
             }
           }
         }
