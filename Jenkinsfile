@@ -13,7 +13,7 @@ pipeline {
               sh '''
                 /kaniko/executor --dockerfile=`pwd`/Dockerfile \
                                  --context=`pwd` \
-                                 --destination=aryan750/test-kaniko:v1
+                                 --destination=aryan750/testkaniko:v1
               '''               
             }
           }
