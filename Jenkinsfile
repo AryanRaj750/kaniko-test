@@ -11,8 +11,8 @@ pipeline {
           container('kaniko'){
             script {
               sh '''
-                /kaniko/executor --dockerfile=Dockerfile
-                                 --context=""
+                /kaniko/executor --dockerfile=`pwd`/Dockerfile \
+                                 --context=`pwd` \
                                  --destination=aryan750/test-kaniko:v1
               '''               
             }
