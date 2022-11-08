@@ -5,7 +5,7 @@ metadata:
   namespace: kaniko
 spec:
   restartPolicy: Never
-  serviceAccountName: kaniko
+  # serviceAccountName: kaniko
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
