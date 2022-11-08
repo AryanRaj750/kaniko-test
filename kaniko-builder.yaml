@@ -4,6 +4,7 @@ metadata:
   name: kaniko
   namespace: kaniko
 spec:
+  restartPolicy: Never
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
@@ -11,13 +12,9 @@ spec:
     - /busybox/cat
     tty: true
     volumeMounts:
-    - name: kaniko-secret
-      mountPath: "/kaniko/.docker"
+    - name: docker-config
+      mountPath: "/kaniko/.docker/"
   volumes:
-  - name: kaniko-secret
-    secret:
-      secretName: docker
-      items:
-       - key: .dockerconfigjson
-         path: config.json
-  restartPolicy: Never
+  - name: docker-config
+    configMap:
+      name: docker-config
