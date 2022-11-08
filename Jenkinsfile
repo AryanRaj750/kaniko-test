@@ -13,7 +13,7 @@ pipeline {
               sh '''
                 /kaniko/executor --dockerfile=Dockerfile \
                                  --context=`pwd` \
-                                 --no-push                      
+                                 --no-push                  
               '''               
             }
           }
