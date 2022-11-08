@@ -11,10 +11,9 @@ pipeline {
           container('kaniko'){
             script {
               sh '''
-                aws help
                 /kaniko/executor --dockerfile=Dockerfile \
                                  --context=`pwd` \
-                                 --destination=152742397097.dkr.ecr.us-east-2.amazonaws.com/kaniko-test/kaniko:latest                                
+                                 --destination=152742397097.dkr.ecr.us-east-2.amazonaws.com/kaniko-test:v1                                
               '''               
             }
           }
