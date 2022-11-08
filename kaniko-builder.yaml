@@ -8,14 +8,10 @@ spec:
   serviceAccountName: kaniko
   containers:
   - name: kaniko
-    image: gcr.io/kaniko-project/executor:v1.0.0
-    args: ["--dockerfile=Dockerfile",
-           "--context=`pwd`", 
-           "--destination=152742397097.dkr.ecr.us-east-2.amazonaws.com/kaniko-test:latest",
-           "--cache=true"           ]
-    # command:
-    # - /busybox/cat
-    # tty: true
+    image: gcr.io/kaniko-project/executor:debug
+    command:
+    - /busybox/cat
+    tty: true
   #   volumeMounts:
   #   - name: docker-config
   #     mountPath: "/kaniko/.docker/"
