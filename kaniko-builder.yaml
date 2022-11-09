@@ -13,8 +13,8 @@ spec:
     - /busybox/cat
     tty: true
     env:
-    # - name: AWS_SDK_LOAD_CONFIG
-    #   value: true
+    - name: AWS_SDK_LOAD_CONFIG
+      value: true
     volumeMounts:
     - name: aws-secret
       mountPath: /root/.aws/
