@@ -54,8 +54,7 @@ pipeline {
             apiVersion: v1
             kind: Pod
             metadata:
-              name: kaniko
-              namespace: kaniko
+              name: kaniko              
             spec:
               restartPolicy: Never
               containers:
@@ -119,8 +118,7 @@ pipeline {
             apiVersion: v1
             kind: Pod
             metadata:
-              name: crane
-              namespace: kaniko
+              name: crane              
             spec:
               restartPolicy: Never
               containers:
