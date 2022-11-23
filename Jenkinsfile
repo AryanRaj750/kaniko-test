@@ -73,7 +73,7 @@ pipeline {
               last_started = env.STAGE_NAME
               echo 'Build start'              
               sh '''
-                /kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --tarPath $(pwd)/build/${IMAGE_NAME}-${BUILD_NUMBER}.tar
+                /kaniko/executor --dockerfile Dockerfile  --context=`pwd` --no-push --tarPath `pwd`/build/kaniko-test.tar
               '''               
             }              
         }
@@ -83,7 +83,7 @@ pipeline {
               last_started = env.STAGE_NAME
               echo 'Scan with trivy'
               sh '''
-              trivy image --ignore-unfixed -f json -o scan-report.json $(pwd)/build/${IMAGE_NAME}-${BUILD_NUMBER}.tar
+              trivy image --ignore-unfixed -f json -o scan-report.json $(pwd)/build/kaniko-test.tar
               '''
               echo 'archive scan report'
               archiveArtifacts artifacts: 'scan-report.json'
@@ -129,7 +129,7 @@ pipeline {
               withAWS(credentials: 'jenkins-demo-aws') {             
                 sh '''                
                 crane auth login ${DOCKER_REPO_BASE_URL} -u AWS -p `aws ecr get-login-password --region ${AWS_REGION}`
-                crane push build/${IMAGE_NAME}/${BUILD_NUMBER}.tar ${IMAGE_NAME}:${BUILD_NUMBER}
+                crane push build/kaniko-test.tar ${IMAGE_NAME}:${BUILD_NUMBER}
                 '''
                 }           
               }
