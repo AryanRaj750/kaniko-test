@@ -73,6 +73,7 @@ pipeline {
               last_started = env.STAGE_NAME
               echo 'Build start'              
               sh '''
+                cal
                 /kaniko/executor --dockerfile Dockerfile  --context=`pwd` --no-push --tarPath `pwd`/build/kaniko-test.tar
               '''               
             }              
