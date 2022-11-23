@@ -73,13 +73,7 @@ pipeline {
               last_started = env.STAGE_NAME
               echo 'Build start'              
               sh '''
-                /kaniko/executor  \
-                --dockerfile=Dockerfile \
-                --context=`pwd` \
-                --destination=${IMAGE_NAME}:${BUILD_NUMBER}  \
-                --no-push  \
-                --oci-layout-path $(pwd)/build/  \
-                --tarPath $(pwd)/build/${IMAGE_NAME}/${BUILD_NUMBER}.tar
+                /kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --tarPath $(pwd)/build/${IMAGE_NAME}-${BUILD_NUMBER}.tar
               '''               
             }              
         }
@@ -89,7 +83,7 @@ pipeline {
               last_started = env.STAGE_NAME
               echo 'Scan with trivy'
               sh '''
-              trivy image --ignore-unfixed -f json -o scan-report.json $(pwd)/build/${IMAGE_NAME}/${BUILD_NUMBER}.tar
+              trivy image --ignore-unfixed -f json -o scan-report.json $(pwd)/build/${IMAGE_NAME}-${BUILD_NUMBER}.tar
               '''
               echo 'archive scan report'
               archiveArtifacts artifacts: 'scan-report.json'
