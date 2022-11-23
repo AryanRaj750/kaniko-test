@@ -46,7 +46,7 @@ pipeline {
             script {
               last_started = env.STAGE_NAME
               echo 'Build start'              
-              sh '/kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --tarPath /build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar'               
+              sh '/kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --tarPath `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar'               
             }              
         }
       }
@@ -78,7 +78,7 @@ pipeline {
               withAWS(credentials: 'jenkins-demo-aws') {             
                 sh '''                
                 crane auth login ${DOCKER_REPO_BASE_URL} -u AWS -p `aws ecr get-login-password --region ${AWS_REGION}`
-                crane push build/${IMAGE_NAME}-${BUILD_NUMBER}.tar ${IMAGE_NAME}:${BUILD_NUMBER}
+                crane push `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar ${IMAGE_NAME}:${BUILD_NUMBER}
                 '''
                 }           
               }
