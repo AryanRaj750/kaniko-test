@@ -150,14 +150,4 @@ pipeline {
         }
       }
   }
-
-  post {
-        failure {
-            slackSend message: 'Pipeline for ' + env.JOB_NAME + ' with Build Id - ' +  env.BUILD_ID + ' Failed at - ' +  env.last_started
-        }
-
-        success {
-            slackSend message: 'Pipeline for ' + env.JOB_NAME + ' with Build Id - ' +  env.BUILD_ID + ' SUCCESSFUL'
-        }
-    }
 }
