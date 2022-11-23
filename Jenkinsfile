@@ -23,7 +23,7 @@ pipeline {
             ).trim()}"""
     last_started_build_stage = ""   
     IMAGE_NAME="${DOCKER_REPO_BASE_URL}/${DOCKER_REPO_NAME}/${DEPLOYMENT_STAGE}"
-    def scannerHome = tool 'SonarqubeScanner';
+    // def scannerHome = tool 'SonarqubeScanner';
     PROJECT_NAME="roboshop"    
   }
 
