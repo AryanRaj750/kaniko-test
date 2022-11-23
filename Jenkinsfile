@@ -72,7 +72,7 @@ pipeline {
             script {
               last_started = env.STAGE_NAME
               echo 'Build start'              
-              sh '/kaniko/executor --dockerfile Dockerfile  --context=`pwd` --no-push --tarPath $(pwd)/build/${IMAGE_NAME}-${BUILD_NUMBER}.tar'               
+              sh '/kaniko/executor --dockerfile Dockerfile  --context=`pwd` --no-push --tarPath `pwd`/build/${IMAGE_NAME}-${BUILD_NUMBER}.tar'               
             }              
         }
 
