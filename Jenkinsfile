@@ -4,9 +4,7 @@ def COLOR_MAP = [
 ]
 
 pipeline { 
-  stages {    
-    stage('Build Docker Image') {
-        agent {
+  agent {
           kubernetes {
             label 'jenkinsrun'
             yaml """
@@ -25,7 +23,8 @@ pipeline {
             """
           }
         }
-
+  stages {    
+    stage('Build Docker Image') {
       steps {
        container('kaniko'){
             script {
