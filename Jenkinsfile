@@ -39,6 +39,18 @@ pipeline {
         }
   stages {    
     stage('Build Docker Image') {
+      agent {
+        kubernetes {
+            label 'jenkinsrun'
+            defaultContainer 'trivy'
+            containerTemplate {
+              name 'trivy'
+              image 'aquasec/trivy:0.21.1'
+              command 'sleep'
+              args 'infinity'
+            }
+        }
+  }
       steps {
        container('kaniko'){
             script {
@@ -49,6 +61,31 @@ pipeline {
             }   
             stash includes: 'build/*.tar', name: 'image'                
         }
+        container('trivy') {
+           script {
+              last_started = env.STAGE_NAME
+              echo 'Scan with trivy'    
+              unstash 'image'          
+              sh '''
+              ls -l
+              trivy image --ignore-unfixed -f json -o scan-report.json build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              '''
+              echo 'archive scan report'
+              archiveArtifacts artifacts: 'scan-report.json'
+              echo 'Docker Image Vulnerability Scanning'
+              high = sh (
+                   script: 'cat scan-report.json | jq \'.[].Vulnerabilities[].Severity\' | grep HIGH | wc -l',
+                   returnStdout: true
+              ).trim()
+              echo "High: ${high}"
+             
+             critical = sh (
+                  script: 'cat scan-report.json | jq \'.[].Vulnerabilities[].Severity\' | grep CRITICAL | wc -l',
+                   returnStdout: true
+              ).trim()
+              echo "Critical: ${critical}"             
+           }
+         }
       }
     } 
 
