@@ -50,7 +50,8 @@ pipeline {
               args 'infinity'
             }
         }
-  }
+      }
+    
       steps {
        container('kaniko'){
             script {
@@ -61,6 +62,7 @@ pipeline {
             }   
             stash includes: 'build/*.tar', name: 'image'                
         }
+      
         container('trivy') {
            script {
               last_started = env.STAGE_NAME
@@ -86,8 +88,8 @@ pipeline {
               echo "Critical: ${critical}"             
            }
          }
-      }
-    } 
+      } 
+    }    
 
     stage('Push to ECR') {
        agent {
