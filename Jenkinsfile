@@ -46,7 +46,7 @@ pipeline {
               echo 'Build start'              
               sh '/kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --oci-layout-path `pwd`/build/ --tarPath `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar'               
             }         
-            archiveArtifacts artifacts: 'build/', onlyIfSuccessful: true    
+            archiveArtifacts artifacts: 'build/*.tar', onlyIfSuccessful: true    
         }
       }
     } 
