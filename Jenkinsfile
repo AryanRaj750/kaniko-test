@@ -46,7 +46,7 @@ pipeline {
             script {
               last_started = env.STAGE_NAME
               echo 'Build start'              
-              sh '/kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --oci-layout-path `pwd`/build/ --tarPath `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar'               
+              sh '/kaniko/executor --dockerfile Dockerfile  --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --oci-layout-path `pwd`/build/ --tarPath `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar'               
             }              
         }
       }
@@ -73,19 +73,13 @@ pipeline {
        steps {        
          container('crane') {
            script {
-             echo 'push to ecr step start'
-             if ( "$high" < 500 && "$critical" < 80 ) {  
+             echo 'push to ecr step start'              
               withAWS(credentials: 'jenkins-demo-aws') {             
                 sh '''                
                 crane auth login ${DOCKER_REPO_BASE_URL} -u AWS -p `aws ecr get-login-password --region ${AWS_REGION}`
                 crane push `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar ${IMAGE_NAME}:${BUILD_NUMBER}
                 '''
-                }           
-              }
-              else {
-                echo "The Image can't be pushed due to too many vulnerbilities"
-                exit
-              }
+                }                
             }
 	        }
         }
