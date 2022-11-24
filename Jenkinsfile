@@ -4,7 +4,6 @@ def COLOR_MAP = [
 ]
 
 pipeline { 
-  agent none
   environment {
     AWS_ACCOUNT_ID = 152742397097
     AWS_REGION="us-east-2"
@@ -19,10 +18,7 @@ pipeline {
             ).trim()}"""
     IMAGE_NAME="${DOCKER_REPO_BASE_URL}/${DOCKER_REPO_NAME}/${DEPLOYMENT_STAGE}"
   }
-  
-  stages {    
-    stage('Build Docker Image') {
-      agent {
+  agent {
           kubernetes {
             label 'jenkinsrun'
             yaml """
@@ -41,6 +37,8 @@ pipeline {
             """
           }
         }
+  stages {    
+    stage('Build Docker Image') {
       steps {
        container('kaniko'){
             script {
@@ -54,8 +52,7 @@ pipeline {
 
     stage('Push to ECR') {
        agent {
-          kubernetes {
-            label 'jenkinsrun'
+          kubernetes {            
             yaml """
             apiVersion: v1
             kind: Pod
@@ -77,6 +74,7 @@ pipeline {
                 echo 'push to ecr step start'  
                 sh '''                                   
                 crane auth login ${DOCKER_REPO_BASE_URL} -u AWS -p `aws ecr get-login-password --region ${AWS_REGION}` 
+                crane push `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar ${IMAGE_NAME}:${BUILD_NUMBER}
                 '''               
               }                                        
             }
