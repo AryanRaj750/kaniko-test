@@ -53,8 +53,7 @@ pipeline {
     }
     stage('Scan Docker Image') {
       agent {
-        kubernetes {
-            // label 'jenkinsrun'            
+        kubernetes {           
             containerTemplate {
               name 'trivy'
               image 'aquasec/trivy:0.21.1'
@@ -71,8 +70,7 @@ pipeline {
               echo 'Scan with trivy'    
               unstash 'image'          
               sh '''
-              ls -l
-              trivy image --ignore-unfixed -f json -o scan-report.json build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              trivy image --ignore-unfixed -f json -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               '''
               echo 'archive scan report'
               archiveArtifacts artifacts: 'scan-report.json'
@@ -112,6 +110,7 @@ pipeline {
             """
            }
         }
+       options { skipDefaultCheckout() }
        steps {        
          container('crane') {
            withAWS(credentials: 'jenkins-demo-aws') { 
