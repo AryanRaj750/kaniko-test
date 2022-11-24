@@ -62,7 +62,22 @@ pipeline {
             }   
             stash includes: 'build/*.tar', name: 'image'                
         }
-      
+      }
+    }
+    stage('Scan Docker Image') {
+      agent {
+        kubernetes {
+            label 'jenkinsrun'
+            defaultContainer 'trivy'
+            containerTemplate {
+              name 'trivy'
+              image 'aquasec/trivy:0.21.1'
+              command 'sleep'
+              args 'infinity'
+            }
+        }
+      }
+      steps {
         container('trivy') {
            script {
               last_started = env.STAGE_NAME
