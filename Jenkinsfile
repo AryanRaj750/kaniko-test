@@ -17,10 +17,11 @@ pipeline {
                 script: 'echo ${GIT_BRANCH#origin/}'
             ).trim()}"""
     IMAGE_NAME="${DOCKER_REPO_BASE_URL}/${DOCKER_REPO_NAME}/${DEPLOYMENT_STAGE}"
-
-
   }
-  agent {
+  agent none
+  stages {    
+    stage('Build Docker Image') {
+      agent {
           kubernetes {
             label 'jenkinsrun'
             yaml """
@@ -39,8 +40,6 @@ pipeline {
             """
           }
         }
-  stages {    
-    stage('Build Docker Image') {
       steps {
        container('kaniko'){
             script {
