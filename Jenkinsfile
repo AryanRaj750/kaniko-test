@@ -72,12 +72,12 @@ pipeline {
         }
        steps {        
          container('crane') {
-           withAWS(credentials: 'jenkins-demo-aws') {                        
-             sh '''            
-                echo 'push to ecr step start' 
-                crane auth login ${DOCKER_REPO_BASE_URL} -u AWS -p `aws ecr get-login-password --region ${AWS_REGION}`
-                crane push `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar ${IMAGE_NAME}:${BUILD_NUMBER}
-             '''                                
+           script {
+             echo 'push to ecr step start'              
+             withAWS(credentials: 'jenkins-demo-aws') {             
+             sh 'crane auth login ${DOCKER_REPO_BASE_URL} -u AWS -p `aws ecr get-login-password --region ${AWS_REGION}` && \
+                 crane push `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar ${IMAGE_NAME}:${BUILD_NUMBER}'
+                }                
             }
 	        }
         }
