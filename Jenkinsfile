@@ -4,6 +4,7 @@ def COLOR_MAP = [
 ]
 
 pipeline { 
+  agent none
   environment {
     AWS_ACCOUNT_ID = 152742397097
     AWS_REGION="us-east-2"
@@ -18,7 +19,7 @@ pipeline {
             ).trim()}"""
     IMAGE_NAME="${DOCKER_REPO_BASE_URL}/${DOCKER_REPO_NAME}/${DEPLOYMENT_STAGE}"
   }
-  agent none
+  
   stages {    
     stage('Build Docker Image') {
       agent {
