@@ -38,20 +38,7 @@ pipeline {
           }
         }
   stages {    
-    stage('Build Docker Image') {
-      agent {
-        kubernetes {
-            label 'jenkinsrun'
-            defaultContainer 'trivy'
-            containerTemplate {
-              name 'trivy'
-              image 'aquasec/trivy:0.21.1'
-              command 'sleep'
-              args 'infinity'
-            }
-        }
-      }
-    
+    stage('Build Docker Image') {     
       steps {
        container('kaniko'){
             script {
@@ -67,8 +54,7 @@ pipeline {
     stage('Scan Docker Image') {
       agent {
         kubernetes {
-            label 'jenkinsrun'
-            defaultContainer 'trivy'
+            label 'jenkinsrun'            
             containerTemplate {
               name 'trivy'
               image 'aquasec/trivy:0.21.1'
@@ -77,6 +63,7 @@ pipeline {
             }
         }
       }
+      options { skipDefaultCheckout() }
       steps {
         container('trivy') {
            script {
