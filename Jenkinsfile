@@ -75,7 +75,7 @@ pipeline {
            withAWS(credentials: 'jenkins-demo-aws') { 
               script {
                 echo 'push to ecr step start'                                     
-                crane auth login ${DOCKER_REPO_BASE_URL} -u AWS -p `aws ecr get-login-password --region ${AWS_REGION}`                
+                crane auth login ${DOCKER_REPO_BASE_URL} -u AWS -p $(aws ecr get-login-password --region ${AWS_REGION})                
               }                                        
             }
 	        }
