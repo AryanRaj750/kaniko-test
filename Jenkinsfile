@@ -57,8 +57,7 @@ pipeline {
             apiVersion: v1
             kind: Pod
             metadata:
-              name: crane
-              namespace: kaniko
+              name: crane            
             spec:
               restartPolicy: Never
               containers:
