@@ -47,8 +47,9 @@ pipeline {
               sh '''/kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --oci-layout-path `pwd`/build/ --tarPath `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               ls -l build/
               '''
+              stash includes: 'build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar', name: 'image-tar'
             }         
-            archiveArtifacts artifacts: 'build/*.tar', onlyIfSuccessful: true    
+            // archiveArtifacts artifacts: 'build/*.tar', onlyIfSuccessful: true    
         }
       }
     } 
@@ -76,7 +77,8 @@ pipeline {
          container('crane') {
            withAWS(credentials: 'jenkins-demo-aws') { 
               script {
-                echo 'push to ecr step start'  
+                echo 'push to ecr step start'
+                unstash 'image-tar'  
                 sh '''                                   
                 crane auth login ${DOCKER_REPO_BASE_URL} -u AWS -p `aws ecr get-login-password --region ${AWS_REGION}` 
                 ls -l
