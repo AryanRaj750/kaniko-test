@@ -54,7 +54,7 @@ pipeline {
     stage('Scan Docker Image') {
       agent {
         kubernetes {
-            label 'jenkinsrun'            
+            // label 'jenkinsrun'            
             containerTemplate {
               name 'trivy'
               image 'aquasec/trivy:0.21.1'
