@@ -38,7 +38,20 @@ pipeline {
           }
         }
   stages {    
-    stage('Build Docker Image') {    
+    stage('Build Docker Image') {     
+      steps {
+       container('kaniko'){
+            script {
+              last_started = env.STAGE_NAME
+              echo 'Build start'              
+              sh '''/kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --oci-layout-path `pwd`/build/ --tarPath `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              '''               
+            }   
+            stash includes: 'build/*.tar', name: 'image'                
+        }
+      }
+    }
+    stage('Scan Docker Image') {
       agent {
         kubernetes {           
             containerTemplate {
@@ -48,18 +61,9 @@ pipeline {
               args 'infinity'
             }
         }
-      } 
+      }
+      options { skipDefaultCheckout() }
       steps {
-        container('kaniko'){
-            script {
-              last_started = env.STAGE_NAME
-              echo 'Build start'              
-              sh '''/kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --oci-layout-path `pwd`/build/ --tarPath `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
-              '''               
-            }   
-            stash includes: 'build/*.tar', name: 'image'                
-        }
-
         container('trivy') {
            script {
               last_started = env.STAGE_NAME
