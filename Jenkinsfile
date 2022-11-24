@@ -45,10 +45,9 @@ pipeline {
               last_started = env.STAGE_NAME
               echo 'Build start'              
               sh '''/kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --oci-layout-path `pwd`/build/ --tarPath `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
-              ls -l build/
-              '''
-              stash includes: 'build/*.tar', name: 'image'
-            }         
+              '''               
+            }   
+            stash includes: 'build/*.tar', name: 'image', onlyIfSuccessful: true      
             // archiveArtifacts artifacts: 'build/*.tar', onlyIfSuccessful: true    
         }
       }
@@ -80,8 +79,7 @@ pipeline {
                 echo 'push to ecr step start'
                 unstash 'image'  
                 sh '''                                   
-                crane auth login ${DOCKER_REPO_BASE_URL} -u AWS -p `aws ecr get-login-password --region ${AWS_REGION}` 
-                ls -l
+                crane auth login ${DOCKER_REPO_BASE_URL} -u AWS -p `aws ecr get-login-password --region ${AWS_REGION}`
                 crane push build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar ${IMAGE_NAME}:${BUILD_NUMBER}
                 '''               
               }                                        
