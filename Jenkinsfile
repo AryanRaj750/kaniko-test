@@ -63,6 +63,9 @@ pipeline {
               containers:
               - name: crane
                 image: aryan750/aws-crane:v1
+                command:
+                - /bin/sh
+                tty: true
             """
            }
         }
