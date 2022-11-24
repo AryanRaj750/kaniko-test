@@ -113,18 +113,25 @@ pipeline {
        options { skipDefaultCheckout() }
        steps {        
          container('crane') {
-           withAWS(credentials: 'jenkins-demo-aws') { 
-              script {
-                echo 'push to ecr step start'
+           script {
+              echo 'push to ecr step start'
+              if ( "$high" < 500 && "$critical" < 80 ) {
+                withAWS(credentials: 'jenkins-demo-aws') {               
                 unstash 'image'  
                 sh '''                                   
                 crane auth login ${DOCKER_REPO_BASE_URL} -u AWS -p `aws ecr get-login-password --region ${AWS_REGION}`
                 crane push build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar ${IMAGE_NAME}:${BUILD_NUMBER}
                 '''               
-              }                                        
+                }   
+              } 
+              else {
+                echo "The Image can't be pushed due to too many vulnerbilities"
+                exit
+              }                                    
             }
 	        }
         }
-      }    
-  }
+      }  
+      // new stage start  
+   }
 }
