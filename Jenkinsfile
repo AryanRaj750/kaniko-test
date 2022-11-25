@@ -93,7 +93,8 @@ pipeline {
 
     stage('Push to ECR') {
        agent {
-          kubernetes {            
+          kubernetes {    
+            label 'kaniko'        
             yaml """
             apiVersion: v1
             kind: Pod
