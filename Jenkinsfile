@@ -47,7 +47,7 @@ pipeline {
               sh '''/kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --oci-layout-path `pwd`/build/ --tarPath `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               '''               
             }   
-            stash includes: 'build/*.tar', name: 'image'                
+            stash includes: 'build/.tar', name: 'image'          
         }
       }
     }
@@ -103,10 +103,9 @@ pipeline {
            script {
               echo 'push to ecr step start'
               if ( "$high" < 500 && "$critical" < 80 ) {
-                withAWS(credentials: 'jenkins-demo-aws') {               
-                unstash 'image'  
+                withAWS(credentials: 'jenkins-demo-aws') {  
                 sh '''                                   
-                /kaniko/executor --context=build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar --destination=${IMAGE_NAME}:${BUILD_NUMBER}
+                /kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER}
                 '''               
                 }   
               } 
