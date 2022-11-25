@@ -104,9 +104,9 @@ pipeline {
               echo 'push to ecr step start'
               if ( "$high" < 500 && "$critical" < 80 ) {
                 withAWS(credentials: 'jenkins-demo-aws') {               
-                // unstash 'image'  
+                unstash 'image'  
                 sh '''                                   
-                /kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER}
+                /kaniko/executor --dockerfile Dockerfile  --context=build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar --destination=${IMAGE_NAME}:${BUILD_NUMBER}
                 '''               
                 }   
               } 
