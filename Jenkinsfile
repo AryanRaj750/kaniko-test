@@ -106,7 +106,7 @@ pipeline {
                 withAWS(credentials: 'jenkins-demo-aws') {               
                 unstash 'image'  
                 sh '''                                   
-                /kaniko/executor --dockerfile Dockerfile  --context=build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar --destination=${IMAGE_NAME}:${BUILD_NUMBER}
+                /kaniko/executor --context=build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar --destination=${IMAGE_NAME}:${BUILD_NUMBER}
                 '''               
                 }   
               } 
