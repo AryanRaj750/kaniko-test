@@ -93,23 +93,9 @@ pipeline {
 
     stage('Push to ECR') {
        agent {
-          kubernetes {    
-            label 'kaniko'        
-            yaml """
-            apiVersion: v1
-            kind: Pod
-            metadata:
-              name: crane            
-            spec:
-              restartPolicy: Never
-              containers:
-              - name: crane
-                image: aryan750/aws-crane:v1
-                command:
-                - /bin/sh
-                tty: true
-            """
-           }
+          kubernetes { 
+            label 'kaniko'
+            }
         }
       //  options { skipDefaultCheckout() }
        steps {        
