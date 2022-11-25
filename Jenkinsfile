@@ -94,33 +94,18 @@ pipeline {
     stage('Push to ECR') {
        agent {
           kubernetes { 
-            // label 'kaniko'
-            yaml """
-            apiVersion: v1
-            kind: Pod
-            metadata:
-              name: crane            
-            spec:
-              restartPolicy: Never
-              containers:
-              - name: crane
-                image: aryan750/aws-crane:v1
-                command:
-                - /bin/sh
-                tty: true
-            """
+            label 'kaniko'
             }
         }
       //  options { skipDefaultCheckout() }
        steps {        
-         container('crane') {
+         container('kaniko') {
            script {
               echo 'push to ecr step start'
               if ( "$high" < 500 && "$critical" < 80 ) {
                 withAWS(credentials: 'jenkins-demo-aws') {  
-                unstash 'image' 
                 sh '''                                   
-                crane push build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar ${IMAGE_NAME}:${BUILD_NUMBER}
+                /kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER}
                 '''               
                 }   
               } 
