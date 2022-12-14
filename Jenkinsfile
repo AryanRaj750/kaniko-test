@@ -18,27 +18,28 @@ pipeline {
             ).trim()}"""
     IMAGE_NAME="${DOCKER_REPO_BASE_URL}/${DOCKER_REPO_NAME}/${DEPLOYMENT_STAGE}"
   }
-  agent {
-    kubernetes {
-      label 'kaniko'
-      yaml """
-      apiVersion: v1
-      kind: Pod
-      metadata:
-        name: kaniko              
-      spec:
-        restartPolicy: Never
-        containers:
-        - name: kaniko
-          image: gcr.io/kaniko-project/executor:debug
-          command:
-          - /busybox/cat
-          tty: true 
-      """
-    }
-  }
+  
   stages {    
-    stage('Build Docker Image') {     
+    stage('Build Docker Image') {   
+      agent {
+        kubernetes {
+          label 'kaniko'
+          yaml """
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: kaniko              
+          spec:
+            restartPolicy: Never
+            containers:
+            - name: kaniko
+              image: gcr.io/kaniko-project/executor:debug
+              command:
+              - /busybox/cat
+              tty: true 
+          """
+        }
+      }  
       steps {
        container('kaniko'){
             script {
@@ -56,7 +57,7 @@ pipeline {
         kubernetes {           
             containerTemplate {
               name 'trivy'
-              image 'aquasec/trivy:0.21.1'
+              image 'aquasec/trivy:0.35.0'
               command 'sleep'
               args 'infinity'
             }
@@ -70,6 +71,7 @@ pipeline {
               echo 'Scan with trivy'    
               unstash 'image'          
               sh '''
+              apk add jq
               trivy image --ignore-unfixed -f json -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               '''
               echo 'archive scan report'
