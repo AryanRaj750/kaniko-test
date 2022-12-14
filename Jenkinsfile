@@ -98,32 +98,32 @@ agent {
       } 
     }    
 
-    stage('Push to ECR') {
-       agent {
-          kubernetes { 
-            label 'kaniko'
-            }
-        }
-      //  options { skipDefaultCheckout() }
-       steps {        
-         container('kaniko') {
-           script {
-              echo 'push to ecr step start'
-              if ( "$high" < 500 && "$critical" < 80 ) {
-                withAWS(credentials: 'jenkins-demo-aws') {  
-                sh '''                                   
-                /kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER}
-                '''               
-                }   
-              } 
-              else {
-                echo "The Image can't be pushed due to too many vulnerbilities"
-                exit
-              }                                    
-            }
-	        }
-        }
-      }  
+    // stage('Push to ECR') {
+    //    agent {
+    //       kubernetes { 
+    //         label 'kaniko'
+    //         }
+    //     }
+    //   //  options { skipDefaultCheckout() }
+    //    steps {        
+    //      container('kaniko') {
+    //        script {
+    //           echo 'push to ecr step start'
+    //           if ( "$high" < 500 && "$critical" < 80 ) {
+    //             withAWS(credentials: 'jenkins-demo-aws') {  
+    //             sh '''                                   
+    //             /kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER}
+    //             '''               
+    //             }   
+    //           } 
+    //           else {
+    //             echo "The Image can't be pushed due to too many vulnerbilities"
+    //             exit
+    //           }                                    
+    //         }
+	  //       }
+    //     }
+    //   }  
       // new stage start  
    }
 }
