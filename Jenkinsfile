@@ -2,6 +2,23 @@ def COLOR_MAP = [
     'SUCCESS': 'good',
     'FAILURE': 'danger',
 ]
+
+pipeline { 
+  environment {
+    AWS_ACCOUNT_ID = 152742397097
+    AWS_REGION="us-east-2"
+    DOCKER_REPO_BASE_URL="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+    DOCKER_REPO_NAME="""${sh(
+                returnStdout: true,
+                script: 'basename=$(basename $GIT_URL) && echo ${basename%.*}'
+            ).trim()}"""
+    DEPLOYMENT_STAGE="""${sh(
+                returnStdout: true,
+                script: 'echo ${GIT_BRANCH#origin/}'
+            ).trim()}"""
+    IMAGE_NAME="${DOCKER_REPO_BASE_URL}/${DOCKER_REPO_NAME}/${DEPLOYMENT_STAGE}"
+  }
+
 agent {
   kubernetes {
     label 'kaniko'
@@ -21,22 +38,6 @@ agent {
     """
   }
 }
-pipeline { 
-  environment {
-    AWS_ACCOUNT_ID = 152742397097
-    AWS_REGION="us-east-2"
-    DOCKER_REPO_BASE_URL="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-    DOCKER_REPO_NAME="""${sh(
-                returnStdout: true,
-                script: 'basename=$(basename $GIT_URL) && echo ${basename%.*}'
-            ).trim()}"""
-    DEPLOYMENT_STAGE="""${sh(
-                returnStdout: true,
-                script: 'echo ${GIT_BRANCH#origin/}'
-            ).trim()}"""
-    IMAGE_NAME="${DOCKER_REPO_BASE_URL}/${DOCKER_REPO_NAME}/${DEPLOYMENT_STAGE}"
-  }
-  
   stages {    
     stage('Build Docker Image') {   
       agent {
