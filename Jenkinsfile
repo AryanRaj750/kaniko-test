@@ -2,7 +2,7 @@ def COLOR_MAP = [
     'SUCCESS': 'good',
     'FAILURE': 'danger',
 ]
-
+agent none
 pipeline { 
   environment {
     AWS_ACCOUNT_ID = 152742397097
