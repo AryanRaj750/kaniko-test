@@ -2,7 +2,25 @@ def COLOR_MAP = [
     'SUCCESS': 'good',
     'FAILURE': 'danger',
 ]
-agent none
+agent {
+  kubernetes {
+    label 'kaniko'
+    yaml """
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: kaniko              
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: kaniko
+        image: gcr.io/kaniko-project/executor:debug
+        command:
+        - /busybox/cat
+        tty: true 
+    """
+  }
+}
 pipeline { 
   environment {
     AWS_ACCOUNT_ID = 152742397097
@@ -24,20 +42,6 @@ pipeline {
       agent {
         kubernetes {
           label 'kaniko'
-          yaml """
-          apiVersion: v1
-          kind: Pod
-          metadata:
-            name: kaniko              
-          spec:
-            restartPolicy: Never
-            containers:
-            - name: kaniko
-              image: gcr.io/kaniko-project/executor:debug
-              command:
-              - /busybox/cat
-              tty: true 
-          """
         }
       }  
       steps {
