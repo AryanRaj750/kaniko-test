@@ -62,7 +62,7 @@ agent {
         kubernetes {           
             containerTemplate {
               name 'trivy'
-              image 'aquasec/trivy:0.35.0'
+              image 'aquasec/trivy:0.18.3'
               command 'sleep'
               args 'infinity'
             }
