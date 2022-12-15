@@ -66,7 +66,7 @@ pipeline {
             script {
               last_started = env.STAGE_NAME
               echo 'Build start'              
-              sh '''/kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --oci-layout-path `pwd`/build/ --tarPath `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              sh '''/kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER} --no-push --oci-layout-path `pwd`/build/ --cache-dir cache/image--tarPath `pwd`/build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               '''               
             }   
             stash includes: 'build/*.tar', name: 'image'          
@@ -82,8 +82,12 @@ pipeline {
               echo 'Scan with trivy'    
               unstash 'image'          
               sh '''
-              jq --help
-              trivy image --ignore-unfixed -f json -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              echo 'Build report'
+              trivy --exit-code 0 --cache-dir .trivycache/ --no-progress --ignore-unfixed -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              echo 'Print report'
+              trivy --exit-code 0 --cache-dir .trivycache/ --no-progress --severity HIGH --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              echo 'Fail on high and critical vulnerabilities'
+              trivy --exit-code 1 --cache-dir .trivycache/ --severity CRITICAL --no-progress --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               '''
               echo 'archive scan report'
               archiveArtifacts artifacts: 'scan-report.json'
