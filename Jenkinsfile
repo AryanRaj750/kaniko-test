@@ -82,7 +82,7 @@ pipeline {
               echo 'Scan with trivy'    
               unstash 'image'          
               sh '''
-              apk add jq yq
+              jq --help
               trivy image --ignore-unfixed -f json -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               '''
               echo 'archive scan report'
