@@ -98,8 +98,9 @@ pipeline {
            script {
               last_started = env.STAGE_NAME
               echo 'Scan with trivy' 
-              unstash 'image'          
+              unstash 'image'
               sh '''
+              apk add jq
               echo 'Build report'
               trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress --format template --template "@/contrib/gitlab.tpl" --ignore-unfixed -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               echo 'Print Report'
