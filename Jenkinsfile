@@ -18,31 +18,47 @@ pipeline {
             ).trim()}"""
     IMAGE_NAME="${DOCKER_REPO_BASE_URL}/${DOCKER_REPO_NAME}/${DEPLOYMENT_STAGE}"
   }
-
-agent {
-  kubernetes {
-    label 'kaniko'
-    yaml """
-    apiVersion: v1
-    kind: Pod
-    metadata:
-      name: kaniko              
-    spec:
-      restartPolicy: Never
-      containers:
-      - name: kaniko
-        image: gcr.io/kaniko-project/executor:debug
-        command:
-        - /busybox/cat
-        tty: true 
-    """
+  agent {
+    kubernetes {
+        label 'jenkinsrun'
+        defaultContainer 'dind'
+        yaml """
+          apiVersion: v1
+          kind: Pod
+          spec:
+            containers:
+            - name: dind
+              image: squareops/jenkins-build-agent:latest
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - name: dind-storage
+                  mountPath: /var/lib/docker
+            volumes:
+              - name: dind-storage
+                emptyDir: {}
+          """
+    }
   }
-}
   stages {    
     stage('Build Docker Image') {   
       agent {
         kubernetes {
           label 'kaniko'
+          yaml """
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: kaniko              
+          spec:
+            restartPolicy: Never
+            containers:
+            - name: kaniko
+              image: gcr.io/kaniko-project/executor:debug
+              command:
+              - /busybox/cat
+              tty: true 
+          """
         }
       }  
       steps {
@@ -58,19 +74,9 @@ agent {
       }
     }
     stage('Scan Docker Image') {
-      agent {
-        kubernetes {           
-            containerTemplate {
-              name 'trivy'
-              image 'aquasec/trivy:0.21.1'
-              command 'sleep'
-              args 'infinity'
-            }
-        }
-      }
       options { skipDefaultCheckout() }
       steps {
-        container('trivy') {
+        container('dind') {
            script {
               last_started = env.STAGE_NAME
               echo 'Scan with trivy'    
@@ -98,32 +104,32 @@ agent {
       } 
     }    
 
-    // stage('Push to ECR') {
-    //    agent {
-    //       kubernetes { 
-    //         label 'kaniko'
-    //         }
-    //     }
-    //   //  options { skipDefaultCheckout() }
-    //    steps {        
-    //      container('kaniko') {
-    //        script {
-    //           echo 'push to ecr step start'
-    //           if ( "$high" < 500 && "$critical" < 80 ) {
-    //             withAWS(credentials: 'jenkins-demo-aws') {  
-    //             sh '''                                   
-    //             /kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER}
-    //             '''               
-    //             }   
-    //           } 
-    //           else {
-    //             echo "The Image can't be pushed due to too many vulnerbilities"
-    //             exit
-    //           }                                    
-    //         }
-	  //       }
-    //     }
-    //   }  
+    stage('Push to ECR') {
+       agent {
+          kubernetes { 
+            label 'kaniko'
+            }
+        }
+      //  options { skipDefaultCheckout() }
+       steps {        
+         container('kaniko') {
+           script {
+              echo 'push to ecr step start'
+              if ( "$high" < 500 && "$critical" < 80 ) {
+                withAWS(credentials: 'jenkins-demo-aws') {  
+                sh '''                                   
+                /kaniko/executor --dockerfile Dockerfile  --context=`pwd` --destination=${IMAGE_NAME}:${BUILD_NUMBER}
+                '''               
+                }   
+              } 
+              else {
+                echo "The Image can't be pushed due to too many vulnerbilities"
+                exit
+              }                                    
+            }
+	        }
+        }
+      }  
       // new stage start  
-   }
+  }
 }
