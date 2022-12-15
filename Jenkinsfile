@@ -74,16 +74,38 @@ pipeline {
       }
     }
     stage('Scan Docker Image') {
+      agent {
+        kubernetes {
+          yaml "
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: trivy
+            namespace: jenkins
+          spec:
+            containers:
+            - name: trivy
+              image: aquasec/trivy:0.35.0
+              command: ["sleep"]
+              args:
+              - infinity
+          "
+        }
+      }
       options { skipDefaultCheckout() }
       steps {
-        container('dind') {
+        container('trivy') {
            script {
               last_started = env.STAGE_NAME
-              echo 'Scan with trivy'    
+              echo 'Scan with trivy' 
               unstash 'image'          
               sh '''
               echo 'Build report'
-              trivy --ignore-unfixed -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              trivy --exit-code 0 --cache-dir .trivycache/ --no-progress --format template --template "@contrib/gitlab.tpl" --ignore-unfixed -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              echo 'Print Report'
+              trivy --exit-code 0 --cache-dir .trivycache/ --no-progress --severity HIGH --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              echo 'Fail on high and critical vulnerabilities'
+              trivy --exit-code 1 --cache-dir .trivycache/ --severity CRITICAL --severity HIGH --no-progress --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               '''
               echo 'archive scan report'
               archiveArtifacts artifacts: 'scan-report.json'
