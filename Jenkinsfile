@@ -101,11 +101,11 @@ pipeline {
               unstash 'image'          
               sh '''
               echo 'Build report'
-              trivy --exit-code 0 --cache-dir .trivycache/ --no-progress --format template --template "@contrib/gitlab.tpl" --ignore-unfixed -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress --format template --template "@contrib/gitlab.tpl" --ignore-unfixed -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               echo 'Print Report'
-              trivy --exit-code 0 --cache-dir .trivycache/ --no-progress --severity HIGH --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress --severity HIGH --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               echo 'Fail on high and critical vulnerabilities'
-              trivy --exit-code 1 --cache-dir .trivycache/ --severity CRITICAL --severity HIGH --no-progress --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              trivy image --exit-code 1 --cache-dir .trivycache/ --severity CRITICAL --severity HIGH --no-progress --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               '''
               echo 'archive scan report'
               archiveArtifacts artifacts: 'scan-report.json'
