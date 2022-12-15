@@ -101,7 +101,7 @@ pipeline {
               unstash 'image'          
               sh '''
               echo 'Build report'
-              trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress --format template --template "@contrib/gitlab.tpl" --ignore-unfixed -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress --format template --template "@contrib/contrib/gitlab.tpl" --ignore-unfixed -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               echo 'Print Report'
               trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress --severity HIGH --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
               echo 'Fail on high and critical vulnerabilities'
