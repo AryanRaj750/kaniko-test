@@ -85,7 +85,7 @@ pipeline {
           spec:
             containers:
             - name: trivy
-              image: aquasec/trivy:0.35.0
+              image: aquasec/trivy:latest
               command: ["sleep"]
               args:
               - infinity
