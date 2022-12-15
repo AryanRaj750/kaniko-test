@@ -76,7 +76,7 @@ pipeline {
     stage('Scan Docker Image') {
       agent {
         kubernetes {
-          yaml "
+          yaml """
           apiVersion: v1
           kind: Pod
           metadata:
@@ -89,7 +89,7 @@ pipeline {
               command: ["sleep"]
               args:
               - infinity
-          "
+          """
         }
       }
       options { skipDefaultCheckout() }
