@@ -85,7 +85,7 @@ pipeline {
           spec:
             containers:
             - name: trivy
-              image: aquasec/trivy:latest
+              image: aquasec/trivy:0.35.0
               command: ["sleep"]
               args:
               - infinity
@@ -99,26 +99,20 @@ pipeline {
               last_started = env.STAGE_NAME
               echo 'Scan with trivy' 
               unstash 'image'
-              sh '''
-              apk add jq
-              echo 'Build report'
-              trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress --format template --template "@/contrib/gitlab.tpl" --ignore-unfixed -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
-              echo 'Print Report'
-              trivy image --exit-code 0 --cache-dir .trivycache/ --no-progress --severity HIGH --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
-              echo 'Fail on high and critical vulnerabilities'
-              trivy image --exit-code 1 --cache-dir .trivycache/ --severity CRITICAL --severity HIGH --no-progress --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar
+              sh '''            
+              trivy image --ignore-unfixed -f json -o scan-report.json --input build/${DOCKER_REPO_NAME}-${BUILD_NUMBER}.tar              
               '''
               echo 'archive scan report'
               archiveArtifacts artifacts: 'scan-report.json'
               echo 'Docker Image Vulnerability Scanning'
               high = sh (
-                   script: 'cat scan-report.json | jq \'.[].Vulnerabilities[].Severity\' | grep HIGH | wc -l',
+                   script: 'cat scan-report.json | uniq | grep HIGH | wc -l',
                    returnStdout: true
               ).trim()
               echo "High: ${high}"
              
              critical = sh (
-                  script: 'cat scan-report.json | jq \'.[].Vulnerabilities[].Severity\' | grep CRITICAL | wc -l',
+                  script: 'cat scan-report.json | uniq | grep CRITICAL | wc -l',
                    returnStdout: true
               ).trim()
               echo "Critical: ${critical}"             
